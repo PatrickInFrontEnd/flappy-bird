@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <link
+            href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap&subset=latin-ext"
+            rel="stylesheet"
+        />
+        <title>Flappy bird</title>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                background-color: #00cec9;
+                color: #fff;
+                font-family: "Montserrat", "Arial", "Sans-Serif";
+                font-size: 22px;
+            }
+
+            .container {
+                width: 90%;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+
+            .header {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 80%;
+                height: 100px;
+                padding: 10px 20px;
+                margin: 20px auto;
+                font-size: 32px;
+                background-color: #fda7df;
+            }
+            .header__p {
+                padding: 10px;
+                border-radius: 12px;
+                text-align: right;
+                font-weight: bold;
+            }
+            .header__logo {
+                width: 100px;
+                height: 100%;
+                margin-left: 20px;
+            }
+            .app {
+                margin: 30px auto;
+                width: 800px;
+                height: 500px;
+                background-color: #000;
+            }
+            .footer {
+                height: 200px;
+                background-color: #333;
+                color: #2e86de;
+                font-size: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header class="header">
+                <p class="header__p">
+                    Flappy Bird - game for all of us!
+                </p>
+                <img
+                    src="./img/flappy-bird.png"
+                    alt="logo"
+                    class="header__logo"
+                />
+            </header>
+            <canvas class="app" width="800px" height="500px"></canvas>
+        </div>
+        <footer class="footer">
+            <p>Flappy Bird game - JavaScript project - &copy; 2019</p>
+        </footer>
+    </body>
+</html>
