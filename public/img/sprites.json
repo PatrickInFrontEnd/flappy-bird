@@ -1,0 +1,49 @@
+{
+    "lightBgLayer": {
+        "sx": 0,
+        "sy": 0,
+        "width": 145,
+        "height": 256
+    },
+    "darkBgLayer": {
+        "sx": 146,
+        "sy": 0,
+        "width": 144,
+        "height": 256
+    },
+    "upperPipe": {
+        "sx": 56,
+        "sy": 323,
+        "width": 26,
+        "height": 160
+    },
+    "bottomPipe": {
+        "sx": 84,
+        "sy": 323,
+        "width": 26,
+        "height": 160
+    },
+
+    "bird": {
+        "frames": [
+            {
+                "sx": 3,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            },
+            {
+                "sx": 31,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            },
+            {
+                "sx": 59,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            }
+        ]
+    }
+}
