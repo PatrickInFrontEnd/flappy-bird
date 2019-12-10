@@ -53,29 +53,12 @@ export default class Pipe_Generator {
         );
     }
 
-    clearPipes = () => {
-        this.ctx.clearRect(
-            this.upperPipe.x,
-            this.upperPipe.y,
-            this.upperPipe.w,
-            this.upperPipe.h
-        );
-
-        this.ctx.clearRect(
-            this.bottomPipe.x,
-            this.bottomPipe.y,
-            this.bottomPipe.w,
-            this.bottomPipe.h
-        );
-    };
-
     animatePipes = () => {
         this.upperPipe.x -= this.__SPEED;
         this.bottomPipe.x -= this.__SPEED;
     };
 
     updatePipes = () => {
-        this.clearPipes();
         this.animatePipes();
         this.drawPipes();
     };

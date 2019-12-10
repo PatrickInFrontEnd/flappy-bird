@@ -1,4 +1,5 @@
 import Pipe_Generator from "./pipes_generator.js";
+import Flappy_Bird from "./hero.js";
 
 class CanvasService {
     constructor(canvas) {
@@ -8,6 +9,8 @@ class CanvasService {
         this.ctx = this.canvas.getContext("2d");
 
         this.pipeArray = [];
+
+        this.bird = new Flappy_Bird(this.ctx);
 
         this.countFrame = 0;
     }
@@ -23,7 +26,10 @@ class CanvasService {
         if (this.isPipeOut()) {
             this.pipeArray.shift();
         }
+
+        this.ctx.clearRect(0, 0, this.cw, this.ch);
         this.drawPipes();
+        this.bird.update();
 
         requestAnimationFrame(this.draw);
     };
