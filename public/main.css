@@ -45,9 +45,8 @@ body {
 }
 #app {
     margin: 30px auto;
-    width: 800px;
-    height: 500px;
     background-color: #000;
+    outline: none;
 }
 .footer {
     height: 200px;

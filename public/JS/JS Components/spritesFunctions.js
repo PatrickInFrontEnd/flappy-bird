@@ -11,15 +11,42 @@ async function createSprite(name) {
 
         if (!bufferData) throw Error("Wrong name of sprite: " + name);
 
-        const { sx, sy, width: imgW, height: imgH } = bufferData;
-
         const buffer = document.createElement("canvas");
         const bufferCtx = buffer.getContext("2d");
 
-        buffer.width = imgW;
-        buffer.height = imgH;
+        if (!bufferData.frames) {
+            const { sx, sy, width: imgW, height: imgH } = bufferData;
 
-        bufferCtx.drawImage(image, sx, sy, imgW, imgH, 0, 0, imgW, imgH); //NOTE:(img , sx,sy,sw,sh , dx,dy,dw,dh )
+            buffer.width = imgW;
+            buffer.height = imgH;
+
+            bufferCtx.drawImage(image, sx, sy, imgW, imgH, 0, 0, imgW, imgH); //NOTE:(img , sx,sy,sw,sh , dx,dy,dw,dh )
+        } else {
+            let buffers = [];
+            const { frames } = bufferData;
+
+            buffers = frames.map(({ sx, sy, width: imgW, height: imgH }) => {
+                const buffer = document.createElement("canvas");
+                const bufferCtx = buffer.getContext("2d");
+
+                buffer.width = imgW;
+                buffer.height = imgH;
+
+                bufferCtx.drawImage(
+                    image,
+                    sx,
+                    sy,
+                    imgW,
+                    imgH,
+                    0,
+                    0,
+                    imgW,
+                    imgH
+                );
+                return buffer;
+            });
+            return buffers;
+        }
 
         return buffer;
     } catch (error) {

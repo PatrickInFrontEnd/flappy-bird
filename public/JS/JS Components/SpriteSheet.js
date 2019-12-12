@@ -9,6 +9,10 @@ class SpriteSheet_Generator {
         this.spritesSheet.set(name, createSprite(name));
     };
 
+    addSprites = (...names) => {
+        names.forEach(name => this.addSprite(name));
+    };
+
     getSprite = async name => {
         try {
             if (!this.spritesSheet.has(name))
@@ -18,6 +22,17 @@ class SpriteSheet_Generator {
         } catch (err) {
             console.error("Something went wrong. ", err);
         }
+    };
+
+    getAllSprites = () => {
+        const spritesArr = this.spritesSheet.keys();
+        const sprites = [];
+
+        for (let key of spritesArr) {
+            sprites.push(this.getSprite(key));
+        }
+
+        return sprites;
     };
 }
 export default SpriteSheet_Generator;

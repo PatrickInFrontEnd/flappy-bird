@@ -5,7 +5,6 @@ export default class Flappy_Bird extends Vector {
     constructor(ctx) {
         super(100, ctx.canvas.height / 2);
         this.ctx = ctx;
-        this.r = 10;
         this.__GRAVITY = 0.6;
         this.velocity = 0;
         this.upForce = -8;
@@ -15,33 +14,34 @@ export default class Flappy_Bird extends Vector {
         this.listenToJump();
     }
 
-    draw = () => {
-        this.ctx.beginPath();
-        this.ctx.fillStyle = "#fff";
-        this.ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
-        this.ctx.stroke();
-        this.ctx.fill();
-        this.ctx.closePath();
+    draw = (entitySprites, frameCounter) => {
+        const numberOfFrames = entitySprites.length;
+
+        //TODO create animation function that takes bird as an argument, think over about it somehow...
     };
 
-    update = () => {
+    update = entitySprites => {
         this.velocity += this.__GRAVITY;
         this.y += this.velocity;
         this.checkPosition();
-        this.draw();
+        this.draw(entitySprites);
     };
 
     checkPosition = () => {
+        //TODO Bird now is gonna be a square , refactor this code!
         if (this.y + this.r >= this.ctx.canvas.height) {
             this.velocity = 0;
             this.y = this.ctx.canvas.height - this.r;
+            return true;
         }
 
         if (this.y - this.r <= 0) {
             this.y = this.r;
+            return true;
         }
+
+        return false;
     };
-    //TODO:
     listenToJump = () => {
         this.keyService.addListener(this.ctx.canvas);
 
@@ -53,20 +53,16 @@ export default class Flappy_Bird extends Vector {
         });
     };
 
-    collided = pipeGenerator => {
+    collided = ({ upperPipe, bottomPipe }) => {
+        //TODO Bird now is gonna be a square , refactor this code!
         if (
-            this.x + this.r < pipeGenerator.upperPipe.x ||
-            this.x - this.r >
-                pipeGenerator.upperPipe.x + pipeGenerator.upperPipe.w
+            this.x + this.r < upperPipe.x ||
+            this.x - this.r > upperPipe.x + upperPipe.w
         ) {
             return false;
         } else {
-            if (this.y + this.r >= pipeGenerator.bottomPipe.y) return true;
-            if (
-                this.y - this.r <=
-                pipeGenerator.upperPipe.y + pipeGenerator.upperPipe.h
-            )
-                return true;
+            if (this.y + this.r >= bottomPipe.y) return true;
+            if (this.y - this.r <= upperPipe.y + upperPipe.h) return true;
 
             return false;
         }
