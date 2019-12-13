@@ -1,10 +1,11 @@
 import Pipe from "./Pipe.js";
 
 export default class Pipe_Generator {
-    constructor(ctx) {
+    constructor(ctx, speed) {
         this.ctx = ctx;
         this.ch = this.ctx.canvas.height;
         this.cw = this.ctx.canvas.width;
+        this.__SPEED = speed;
         this.generateConstants();
         this.generateParamsOfPipes();
     }
@@ -16,7 +17,6 @@ export default class Pipe_Generator {
                 (this.ctx.canvas.height - 150)
         );
         if (this.__HEIGHT < 50) this.__HEIGHT = 50;
-        this.__SPEED = 3;
     };
 
     generateParamsOfPipes = () => {
@@ -37,19 +37,52 @@ export default class Pipe_Generator {
         );
     };
 
-    drawPipes() {
-        this.ctx.fillStyle = "#0f0";
-        this.ctx.fillRect(
+    drawPipes({ upperPipeSprite, bottomPipeSprite }) {
+        const { upperPipeColumn, upperPipeSlot } = upperPipeSprite;
+        const { bottomPipeColumn, bottomPipeSlot } = bottomPipeSprite;
+
+        const __VERTICAL_SCALE_OF_SLOTS = 1.5;
+
+        let upperSlotPosX = this.upperPipe.x - 2,
+            upperSlotPosY =
+                this.upperPipe.h -
+                upperPipeSlot.height * __VERTICAL_SCALE_OF_SLOTS,
+            upperSlotWidth = this.upperPipe.w + 4,
+            upperSlotHeight = upperPipeSlot.height * __VERTICAL_SCALE_OF_SLOTS,
+            bottomSlotPosX = this.bottomPipe.x - 2,
+            bottomSlotPosY = this.bottomPipe.y,
+            bottomSlotWidth = this.bottomPipe.w + 4,
+            bottomSlotHeight =
+                bottomPipeSlot.height * __VERTICAL_SCALE_OF_SLOTS;
+
+        this.ctx.drawImage(
+            upperPipeColumn,
             this.upperPipe.x,
             this.upperPipe.y,
             this.upperPipe.w,
             this.upperPipe.h
         );
-        this.ctx.fillRect(
+        this.ctx.drawImage(
+            upperPipeSlot,
+            upperSlotPosX,
+            upperSlotPosY,
+            upperSlotWidth,
+            upperSlotHeight
+        );
+
+        this.ctx.drawImage(
+            bottomPipeColumn,
             this.bottomPipe.x,
             this.bottomPipe.y,
             this.bottomPipe.w,
             this.bottomPipe.h
+        );
+        this.ctx.drawImage(
+            bottomPipeSlot,
+            bottomSlotPosX,
+            bottomSlotPosY,
+            bottomSlotWidth,
+            bottomSlotHeight
         );
     }
 
@@ -58,8 +91,13 @@ export default class Pipe_Generator {
         this.bottomPipe.x -= this.__SPEED;
     };
 
-    updatePipes = () => {
+    increaseSpeed = () => {
+        this.__SPEED++;
+    };
+
+    updatePipes = ({ upperPipeSprite, bottomPipeSprite }, speed) => {
+        if (speed && this.__SPEED !== speed) this.__SPEED = speed;
         this.animatePipes();
-        this.drawPipes();
+        this.drawPipes({ upperPipeSprite, bottomPipeSprite });
     };
 }
