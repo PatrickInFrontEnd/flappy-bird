@@ -41,7 +41,6 @@ export default class Flappy_Bird extends Vector {
     listenToJump = () => {
         this.ctx.canvas.addEventListener("keypress", e => {
             e.preventDefault();
-            console.log(e);
         });
     };
 }
