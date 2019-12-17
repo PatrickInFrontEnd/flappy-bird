@@ -42,56 +42,56 @@
     "bird-yellow": {
         "frames": [
             {
-                "sx": 3,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 0,
+                "sy": 229,
+                "width": 104,
+                "height": 58
             },
             {
-                "sx": 31,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 113,
+                "sy": 229,
+                "width": 103,
+                "height": 55
             },
             {
-                "sx": 59,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 227,
+                "sy": 229,
+                "width": 103,
+                "height": 67
             },
             {
-                "sx": 59,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 345,
+                "sy": 229,
+                "width": 103,
+                "height": 61
             }
         ]
     },
     "bird-blue": {
         "frames": [
             {
-                "sx": 3,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 0,
+                "sy": 81,
+                "width": 97,
+                "height": 60
             },
             {
-                "sx": 31,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 103,
+                "sy": 81,
+                "width": 100,
+                "height": 60
             },
             {
-                "sx": 59,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 208,
+                "sy": 81,
+                "width": 100,
+                "height": 72
             },
             {
-                "sx": 59,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 312,
+                "sy": 81,
+                "width": 100,
+                "height": 66
             }
         ]
     },
@@ -104,50 +104,50 @@
                 "height": 60
             },
             {
-                "sx": 31,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 109,
+                "sy": 0,
+                "width": 100,
+                "height": 60
             },
             {
-                "sx": 59,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 218,
+                "sy": 0,
+                "width": 100,
+                "height": 72
             },
             {
-                "sx": 59,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 328,
+                "sy": 0,
+                "width": 100,
+                "height": 65
             }
         ]
     },
     "bird-red": {
         "frames": [
             {
-                "sx": 3,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 0,
+                "sy": 156,
+                "width": 105,
+                "height": 56
             },
             {
-                "sx": 31,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 112,
+                "sy": 156,
+                "width": 104,
+                "height": 56
             },
             {
-                "sx": 59,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 227,
+                "sy": 156,
+                "width": 104,
+                "height": 71
             },
             {
-                "sx": 59,
-                "sy": 491,
-                "width": 17,
-                "height": 12
+                "sx": 341,
+                "sy": 156,
+                "width": 104,
+                "height": 64
             }
         ]
     }

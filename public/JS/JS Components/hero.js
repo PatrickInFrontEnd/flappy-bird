@@ -1,9 +1,13 @@
 import Vector from "./vector.js";
 import KeyService from "./KeyService.js";
+import { createAnimation } from "./animations.js";
 
 export default class Flappy_Bird extends Vector {
     constructor(ctx) {
         super(100, ctx.canvas.height / 2);
+        this.width = 50;
+        this.height = 32;
+        this.radius = new Vector(0, 0);
         this.ctx = ctx;
         this.__GRAVITY = 0.6;
         this.velocity = 0;
@@ -15,30 +19,24 @@ export default class Flappy_Bird extends Vector {
     }
 
     draw = (entitySprites, frameCounter) => {
-        const numberOfFrames = entitySprites.length;
-
-        //TODO createAnimation generates width and height of bird
-        this.ctx.drawImage(
-            entitySprites[1], //TODO create animation to operate the bird
-            this.x,
-            this.y,
-            this.width,
-            this.height
-        );
+        const image = createAnimation(entitySprites, 5, frameCounter);
+        this.ctx.drawImage(image, this.x, this.y, this.width, this.height);
     };
 
     update = (entitySprites, frameCounter) => {
-        this.width = entitySprites[0].width * 2.5; //TODO refactor this code
-        this.height = entitySprites[0].height * 2.5; //TODO refactor this code
-
         this.velocity += this.__GRAVITY;
         this.y += this.velocity;
+        this.updateRadiusCoordinates(this.x, this.y);
         this.checkPosition();
         this.draw(entitySprites, frameCounter);
     };
 
+    updateRadiusCoordinates = (x, y) => {
+        this.radius.x = x + this.width / 2;
+        this.radius.y = y + this.height / 2;
+    };
+
     checkPosition = () => {
-        //TODO Bird now is gonna be a square , refactor this code!
         if (this.y + this.height >= this.ctx.canvas.height) {
             this.velocity = 0;
             this.y = this.ctx.canvas.height - this.height;
@@ -65,16 +63,19 @@ export default class Flappy_Bird extends Vector {
     };
 
     collided = ({ upperPipe, bottomPipe }) => {
-        //TODO Bird now is gonna be a square , refactor this code!
-        //TODO FIND BETTER SPRITE OF BIRD
         if (
             this.x + this.width < upperPipe.x ||
             this.x > upperPipe.x + upperPipe.w
         ) {
             return false;
         } else {
-            if (this.y + this.height >= bottomPipe.y) return true;
-            if (this.y <= upperPipe.y + upperPipe.h) return true;
+            if (this.radius.y + this.height / 2 - 5 >= bottomPipe.y)
+                return true;
+            if (
+                this.radius.y - this.height / 2 + this.height / 4 <=
+                upperPipe.y + upperPipe.h
+            )
+                return true;
 
             return false;
         }

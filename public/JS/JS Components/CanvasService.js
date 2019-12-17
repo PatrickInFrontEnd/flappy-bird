@@ -58,13 +58,15 @@ class Game_Engine {
 
     startDrawing = async () => {
         this.spritesGenerator.addSprites(
+            "background",
             "lightBgLayer",
             "upperPipeColumn",
             "upperPipeSlot",
             "bottomPipeColumn",
-            "bottomPipeSlot",
-            "bird-yellow"
+            "bottomPipeSlot"
         );
+
+        this.spritesGenerator.addSprite("bird-gray", "entity");
 
         const [
             bgLayer,

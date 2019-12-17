@@ -1,57 +1,44 @@
-const spriteURL = "./img/sprites.png";
+const bgSpritesURL = "./img/sprites.png";
+const entitySpritesURL = "./img/entity_sprites.png";
 
-async function createSprite(name) {
+async function createSprite(nameOfSprite, typeOfSprite) {
     try {
-        const image = await createImage(spriteURL);
+        const URL = typeOfSprite === "entity" ? entitySpritesURL : bgSpritesURL;
+
+        const image = await createImage(URL);
 
         if (!image) throw Error("Image couldn't be loaded.");
 
         const spritesData = await getSpritesData();
-        const bufferData = spritesData[name];
+        const bufferData = spritesData[nameOfSprite];
 
-        if (!bufferData) throw Error("Wrong name of sprite: " + name);
-
-        const buffer = document.createElement("canvas");
-        const bufferCtx = buffer.getContext("2d");
+        if (!bufferData) throw Error("Wrong name of sprite: " + nameOfSprite);
 
         if (!bufferData.frames) {
-            const { sx, sy, width: imgW, height: imgH } = bufferData;
+            const buffer = createBuffer(image, bufferData); //NOTE:(img , sx,sy,sw,sh , dx,dy,dw,dh )
 
-            buffer.width = imgW;
-            buffer.height = imgH;
-
-            bufferCtx.drawImage(image, sx, sy, imgW, imgH, 0, 0, imgW, imgH); //NOTE:(img , sx,sy,sw,sh , dx,dy,dw,dh )
+            return buffer;
         } else {
-            let buffers = [];
-            const { frames } = bufferData;
-
-            buffers = frames.map(({ sx, sy, width: imgW, height: imgH }) => {
-                const buffer = document.createElement("canvas");
-                const bufferCtx = buffer.getContext("2d");
-
-                buffer.width = imgW;
-                buffer.height = imgH;
-
-                bufferCtx.drawImage(
-                    image,
-                    sx,
-                    sy,
-                    imgW,
-                    imgH,
-                    0,
-                    0,
-                    imgW,
-                    imgH
-                );
-                return buffer;
-            });
-            return buffers;
+            const frames = bufferData.frames.map(coordinates =>
+                createBuffer(image, coordinates)
+            );
+            return frames;
         }
-
-        return buffer;
     } catch (error) {
         console.error("Something went wrong ", error);
     }
+}
+
+function createBuffer(image, { sx, sy, width: imgW, height: imgH }) {
+    const buffer = document.createElement("canvas");
+    const bufferCtx = buffer.getContext("2d");
+
+    buffer.width = imgW;
+    buffer.height = imgH;
+
+    bufferCtx.drawImage(image, sx, sy, imgW, imgH, 0, 0, imgW, imgH);
+
+    return buffer;
 }
 
 async function getSpritesData() {
