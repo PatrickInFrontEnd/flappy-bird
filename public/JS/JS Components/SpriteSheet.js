@@ -5,12 +5,12 @@ class SpriteSheet_Generator {
         this.spritesSheet = new Map();
     }
 
-    addSprite = name => {
-        this.spritesSheet.set(name, createSprite(name));
+    addSprite = (name, typeOfSprite) => {
+        this.spritesSheet.set(name, createSprite(name, typeOfSprite));
     };
 
-    addSprites = (...names) => {
-        names.forEach(name => this.addSprite(name));
+    addSprites = (typeOfSprite, ...names) => {
+        names.forEach(name => this.addSprite(name, typeOfSprite));
     };
 
     getSprite = async name => {
@@ -25,11 +25,11 @@ class SpriteSheet_Generator {
     };
 
     getAllSprites = () => {
-        const spritesArr = this.spritesSheet.keys();
+        const names = this.spritesSheet.keys();
         const sprites = [];
 
-        for (let key of spritesArr) {
-            sprites.push(this.getSprite(key));
+        for (let name of names) {
+            sprites.push(this.getSprite(name));
         }
 
         return sprites;

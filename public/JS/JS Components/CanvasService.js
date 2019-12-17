@@ -41,7 +41,8 @@ class Game_Engine {
         });
         this.bird.update(entity, this.countFrame);
 
-        if (this.birdCollided(this.pipesArray)) this.stopPainting();
+        if (this.birdCollided(this.pipesArray) || this.bird.checkPosition())
+            this.stopPainting();
 
         if (this.allowToPlay === true)
             requestAnimationFrame(() => {
@@ -58,13 +59,15 @@ class Game_Engine {
 
     startDrawing = async () => {
         this.spritesGenerator.addSprites(
+            "background",
             "lightBgLayer",
             "upperPipeColumn",
             "upperPipeSlot",
             "bottomPipeColumn",
-            "bottomPipeSlot",
-            "bird-yellow"
+            "bottomPipeSlot"
         );
+
+        this.spritesGenerator.addSprite("bird-yellow", "entity");
 
         const [
             bgLayer,

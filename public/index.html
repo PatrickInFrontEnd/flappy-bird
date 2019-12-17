@@ -12,26 +12,28 @@
         <link rel="stylesheet" href="./main.css" />
     </head>
     <body>
-        <div class="container">
-            <header class="header">
-                <p class="header__p">
-                    Flappy Bird - game for all of us!
+        <div class="wrapper">
+            <div class="container">
+                <header class="header">
+                    <p class="header__p">
+                        Flappy Bird - game for all of us!
+                    </p>
+                    <img src="./img/logo.png" alt="logo" class="header__logo" />
+                </header>
+                <canvas
+                    tabindex="1"
+                    id="app"
+                    width="1000px"
+                    height="600px"
+                ></canvas>
+            </div>
+            <footer class="footer">
+                <p>
+                    Flappy Bird game - JavaScript project made by Patrick
+                    Pluciennik. &copy;2019 All Rights reserved.
                 </p>
-                <img src="./img/logo.png" alt="logo" class="header__logo" />
-            </header>
-            <canvas
-                tabindex="1"
-                id="app"
-                width="1000px"
-                height="600px"
-            ></canvas>
+            </footer>
         </div>
-        <footer class="footer">
-            <p>
-                Flappy Bird game - JavaScript project made by Patrick
-                Pluciennik. &copy;2019 All Rights reserved.
-            </p>
-        </footer>
         <script src="./JS/Main/index.js" type="module"></script>
     </body>
 </html>

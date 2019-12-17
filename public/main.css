@@ -57,3 +57,22 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+@media screen and (min-height: 1000px) {
+    .wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .container {
+        width: 100%;
+    }
+
+    .footer {
+        width: 100%;
+    }
+}
