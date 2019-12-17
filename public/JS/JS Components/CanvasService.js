@@ -2,7 +2,7 @@ import Pipe_Generator from "./pipes_generator.js";
 import Flappy_Bird from "./hero.js";
 import SpriteSheet_Generator from "./SpriteSheet.js";
 
-class CanvasService {
+class Game_Engine {
     constructor(canvas) {
         this.canvas = canvas;
         this.cw = this.canvas.width;
@@ -11,7 +11,7 @@ class CanvasService {
 
         this.__SPEED_OF_PIPES = 3;
 
-        this.allowPainting = true;
+        this.allowToPlay = true;
 
         this.pipesArray = [];
 
@@ -41,11 +41,9 @@ class CanvasService {
         });
         this.bird.update(entity, this.countFrame);
 
-        if (this.birdCollided(this.pipesArray)) {
-            this.stopPainting();
-        }
+        if (this.birdCollided(this.pipesArray)) this.stopPainting();
 
-        if (this.allowPainting === true)
+        if (this.allowToPlay === true)
             requestAnimationFrame(() => {
                 this.draw({
                     bgLayer,
@@ -65,7 +63,7 @@ class CanvasService {
             "upperPipeSlot",
             "bottomPipeColumn",
             "bottomPipeSlot",
-            "bird"
+            "bird-yellow"
         );
 
         const [
@@ -85,7 +83,7 @@ class CanvasService {
             bottomPipeSlot,
             entity
         };
-
+        this.startPainting();
         this.draw(props);
     };
 
@@ -93,7 +91,7 @@ class CanvasService {
         this.countFrame++;
         if (this.countFrame > 3600) this.countFrame = 1;
 
-        if (this.countFrame % 80 === 0) {
+        if (this.countFrame % 100 === 0) {
             this.pipesArray.push(
                 new Pipe_Generator(this.ctx, this.__SPEED_OF_PIPES)
             );
@@ -141,7 +139,7 @@ class CanvasService {
     };
 
     stopPainting = () => {
-        this.allowPainting = false;
+        this.allowToPlay = false;
         setTimeout(() => {
             this.ctx.clearRect(0, 0, this.cw, this.ch);
             this.resetStructures();
@@ -149,17 +147,16 @@ class CanvasService {
     };
 
     startPainting = () => {
-        this.allowPainting = true;
-        this.draw();
+        this.allowToPlay = true;
     };
 
     resetStructures = () => {
-        this.bird = new Flappy_Bird(this.ctx);
+        this.bird.y = this.ch / 2;
         this.pipesArray = [];
     };
 
-    birdCollided = ([...pipesGenerator]) => {
-        const arrayOfTheTruth = pipesGenerator.map(generator => {
+    birdCollided = ([...pipesGenerators]) => {
+        const arrayOfTheTruth = pipesGenerators.map(generator => {
             return this.bird.collided(generator);
         });
 
@@ -173,4 +170,4 @@ class CanvasService {
     };
 }
 
-export default CanvasService;
+export default Game_Engine;

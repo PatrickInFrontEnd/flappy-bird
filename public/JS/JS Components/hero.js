@@ -17,26 +17,37 @@ export default class Flappy_Bird extends Vector {
     draw = (entitySprites, frameCounter) => {
         const numberOfFrames = entitySprites.length;
 
-        //TODO create animation function that takes bird as an argument, think over about it somehow...
+        //TODO createAnimation generates width and height of bird
+        this.ctx.drawImage(
+            entitySprites[1], //TODO create animation to operate the bird
+            this.x,
+            this.y,
+            this.width,
+            this.height
+        );
     };
 
-    update = entitySprites => {
+    update = (entitySprites, frameCounter) => {
+        this.width = entitySprites[0].width * 2.5; //TODO refactor this code
+        this.height = entitySprites[0].height * 2.5; //TODO refactor this code
+
         this.velocity += this.__GRAVITY;
         this.y += this.velocity;
         this.checkPosition();
-        this.draw(entitySprites);
+        this.draw(entitySprites, frameCounter);
     };
 
     checkPosition = () => {
         //TODO Bird now is gonna be a square , refactor this code!
-        if (this.y + this.r >= this.ctx.canvas.height) {
+        if (this.y + this.height >= this.ctx.canvas.height) {
             this.velocity = 0;
-            this.y = this.ctx.canvas.height - this.r;
+            this.y = this.ctx.canvas.height - this.height;
             return true;
         }
 
-        if (this.y - this.r <= 0) {
-            this.y = this.r;
+        if (this.y <= 0) {
+            this.velocity = 0;
+            this.y = 0;
             return true;
         }
 
@@ -55,14 +66,15 @@ export default class Flappy_Bird extends Vector {
 
     collided = ({ upperPipe, bottomPipe }) => {
         //TODO Bird now is gonna be a square , refactor this code!
+        //TODO FIND BETTER SPRITE OF BIRD
         if (
-            this.x + this.r < upperPipe.x ||
-            this.x - this.r > upperPipe.x + upperPipe.w
+            this.x + this.width < upperPipe.x ||
+            this.x > upperPipe.x + upperPipe.w
         ) {
             return false;
         } else {
-            if (this.y + this.r >= bottomPipe.y) return true;
-            if (this.y - this.r <= upperPipe.y + upperPipe.h) return true;
+            if (this.y + this.height >= bottomPipe.y) return true;
+            if (this.y <= upperPipe.y + upperPipe.h) return true;
 
             return false;
         }

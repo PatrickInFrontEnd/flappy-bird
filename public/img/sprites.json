@@ -39,7 +39,7 @@
         "height": 12
     },
 
-    "bird": {
+    "bird-yellow": {
         "frames": [
             {
                 "sx": 3,
@@ -49,6 +49,96 @@
             },
             {
                 "sx": 31,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            },
+            {
+                "sx": 59,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            },
+            {
+                "sx": 59,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            }
+        ]
+    },
+    "bird-blue": {
+        "frames": [
+            {
+                "sx": 3,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            },
+            {
+                "sx": 31,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            },
+            {
+                "sx": 59,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            },
+            {
+                "sx": 59,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            }
+        ]
+    },
+    "bird-gray": {
+        "frames": [
+            {
+                "sx": 0,
+                "sy": 0,
+                "width": 100,
+                "height": 60
+            },
+            {
+                "sx": 31,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            },
+            {
+                "sx": 59,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            },
+            {
+                "sx": 59,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            }
+        ]
+    },
+    "bird-red": {
+        "frames": [
+            {
+                "sx": 3,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            },
+            {
+                "sx": 31,
+                "sy": 491,
+                "width": 17,
+                "height": 12
+            },
+            {
+                "sx": 59,
                 "sy": 491,
                 "width": 17,
                 "height": 12
