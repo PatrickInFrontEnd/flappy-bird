@@ -19,7 +19,7 @@ export default class Flappy_Bird extends Vector {
     }
 
     draw = (entitySprites, frameCounter) => {
-        const image = createAnimation(entitySprites, 5, frameCounter);
+        const image = createAnimation(entitySprites, 4, frameCounter);
         this.ctx.drawImage(image, this.x, this.y, this.width, this.height);
     };
 
