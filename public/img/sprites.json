@@ -150,5 +150,68 @@
                 "height": 64
             }
         ]
+    },
+
+    "scoreBoard": {
+        "sx": 3,
+        "sy": 259,
+        "width": 113,
+        "height": 57
+    },
+
+    "menuIcon": {
+        "sx": 462,
+        "sy": 26,
+        "width": 40,
+        "height": 14
+    },
+
+    "pauseIcon": {
+        "sx": 121,
+        "sy": 306,
+        "width": 13,
+        "height": 14
+    },
+
+    "playIcon": {
+        "sx": 334,
+        "sy": 142,
+        "width": 13,
+        "height": 14
+    },
+
+    "playButton": {
+        "sx": 354,
+        "sy": 118,
+        "width": 52,
+        "height": 29
+    },
+
+    "getReadyTitle": {
+        "sx": 295,
+        "sy": 59,
+        "width": 92,
+        "height": 25
+    },
+
+    "gameOverTitle": {
+        "sx": 395,
+        "sy": 59,
+        "width": 96,
+        "height": 21
+    },
+
+    "flappyBirdTitle": {
+        "sx": 351,
+        "sy": 91,
+        "width": 89,
+        "height": 24
+    },
+
+    "tapBoardIcon": {
+        "sx": 353,
+        "sy": 152,
+        "width": 57,
+        "height": 66
     }
 }

@@ -1,0 +1,38 @@
+{
+    "menuIcon": {
+        "width": 120,
+        "height": 45
+    },
+    "pauseIcon": {
+        "width": 60,
+        "height": 60
+    },
+    "playIcon": {
+        "width": 60,
+        "height": 60
+    },
+    "playButton": {
+        "width": 165,
+        "height": 90
+    },
+    "getReadyTitle": {
+        "width": 296,
+        "height": 80
+    },
+    "gameOverTitle": {
+        "width": 300,
+        "height": 60
+    },
+    "flappyBirdTitle": {
+        "width": 270,
+        "height": 75
+    },
+    "tapBoardIcon": {
+        "width": 120,
+        "height": 140
+    },
+    "scoreBoard":{
+        "width":240,
+        "height":120
+    }
+}

@@ -6,6 +6,7 @@ class SpriteSheet_Generator {
     }
 
     addSprite = (name, typeOfSprite) => {
+        if (this.spritesSheet.has(name)) return;
         this.spritesSheet.set(name, createSprite(name, typeOfSprite));
     };
 

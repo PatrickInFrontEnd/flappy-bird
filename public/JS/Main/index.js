@@ -6,4 +6,9 @@ const canvas = d.querySelector("#app");
 const app = new Game_Engine(canvas);
 
 window.app = app;
-app.startDrawing();
+
+canvas.addEventListener("click", () => {
+    if (app.allowPlaying === false) {
+        app.startDrawing();
+    }
+});

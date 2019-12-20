@@ -1,6 +1,8 @@
 import Pipe_Generator from "./pipes_generator.js";
 import Flappy_Bird from "./hero.js";
 import SpriteSheet_Generator from "./SpriteSheet.js";
+import { SoundMaker } from "./soundMaker.js";
+import Game_Menu from "./Interface.js";
 
 class Game_Engine {
     constructor(canvas) {
@@ -11,40 +13,58 @@ class Game_Engine {
 
         this.__SPEED_OF_PIPES = 3;
 
-        this.allowToPlay = true;
+        this.allowPlaying = false;
 
         this.pipesArray = [];
 
-        this.bird = new Flappy_Bird(this.ctx);
+        this.bird = new Flappy_Bird(this.ctx, this.allowPlaying);
 
+        //It's a determinant of when we should create and add new pipe to the game, also helps with animation
         this.countFrame = 0;
 
         this.spritesGenerator = new SpriteSheet_Generator();
+        this.soundMaker = new SoundMaker();
+        this.menuInterface = new Game_Menu(this.ctx);
+
+        this.addGameSounds();
+        this.setCursorIcon();
     }
 
     draw = ({
+        //NOTE: Ready sprites && sounds
         bgLayer,
         upperPipeColumn,
         upperPipeSlot,
         bottomPipeColumn,
         bottomPipeSlot,
-        entity
+        entity,
+        sounds: { jumpSound, collidedSound, bgSong }
     }) => {
-        this.handlePipes();
+        this.countFrame++;
+        if (this.countFrame > 3600) this.countFrame = 1;
 
         this.ctx.clearRect(0, 0, this.cw, this.ch);
+
+        //NOTE: pushing pipes in appropriate distances
+        this.handlePipes();
         this.createBgLayer(bgLayer);
 
         this.drawPipes({
             upperPipeSprite: { upperPipeColumn, upperPipeSlot },
             bottomPipeSprite: { bottomPipeColumn, bottomPipeSlot }
         });
-        this.bird.update(entity, this.countFrame);
 
-        if (this.birdCollided(this.pipesArray) || this.bird.checkPosition())
-            this.stopPainting();
+        //TODO this.drawGameMenu();
 
-        if (this.allowToPlay === true)
+        this.bird.update(entity, this.countFrame, jumpSound);
+
+        if (this.birdCollided(this.pipesArray) || this.bird.checkPosition()) {
+            this.stopPainting(bgSong);
+            this.bird.stopPlaying();
+            this.soundMaker.playSound(collidedSound);
+        }
+
+        if (this.allowPlaying === true)
             requestAnimationFrame(() => {
                 this.draw({
                     bgLayer,
@@ -52,22 +72,44 @@ class Game_Engine {
                     upperPipeSlot,
                     bottomPipeColumn,
                     bottomPipeSlot,
-                    entity
+                    entity,
+                    sounds: { jumpSound, collidedSound, bgSong }
                 });
             });
+    };
+
+    drawGameMenu = (...tiles) => {
+        tiles.forEach(tile => {
+            this.ctx.drawImage(
+                tile,
+                0,
+                0,
+                tile.width,
+                tile.height,
+                0,
+                0,
+                tile.width * 2.5,
+                tile.height * 2.5
+            );
+        });
     };
 
     startDrawing = async () => {
         this.spritesGenerator.addSprites(
             "background",
-            "lightBgLayer",
+            "darkBgLayer",
             "upperPipeColumn",
             "upperPipeSlot",
             "bottomPipeColumn",
-            "bottomPipeSlot"
+            "bottomPipeSlot",
         );
 
-        this.spritesGenerator.addSprite("bird-yellow", "entity");
+        this.spritesGenerator.addSprite("bird-red", "entity");
+
+        const jumpSound = await this.soundMaker.getSound("jump");
+        const collidedSound = await this.soundMaker.getSound("collided");
+        const bgSong = await this.soundMaker.getSound("song");
+        bgSong.loop = "true";
 
         const [
             bgLayer,
@@ -84,16 +126,15 @@ class Game_Engine {
             upperPipeSlot,
             bottomPipeColumn,
             bottomPipeSlot,
-            entity
+            entity,
+            sounds: { jumpSound, collidedSound, bgSong }
         };
+        this.soundMaker.playSound(bgSong);
         this.startPainting();
         this.draw(props);
     };
 
     handlePipes = () => {
-        this.countFrame++;
-        if (this.countFrame > 3600) this.countFrame = 1;
-
         if (this.countFrame % 100 === 0) {
             this.pipesArray.push(
                 new Pipe_Generator(this.ctx, this.__SPEED_OF_PIPES)
@@ -141,21 +182,24 @@ class Game_Engine {
         );
     };
 
-    stopPainting = () => {
-        this.allowToPlay = false;
+    stopPainting = bgSong => {
+        this.allowPlaying = false;
         setTimeout(() => {
             this.ctx.clearRect(0, 0, this.cw, this.ch);
-            this.resetStructures();
+            this.resetStructures(bgSong);
         }, 2000);
     };
 
     startPainting = () => {
-        this.allowToPlay = true;
+        this.allowPlaying = true;
+        this.bird.startPlaying();
     };
 
-    resetStructures = () => {
+    resetStructures = bgSong => {
+        this.soundMaker.stopSound(bgSong);
         this.bird.y = this.ch / 2;
         this.pipesArray = [];
+        this.countFrame = 1;
     };
 
     birdCollided = ([...pipesGenerators]) => {
@@ -170,6 +214,22 @@ class Game_Engine {
 
     increaseSpeedOfPipes = () => {
         this.__SPEED_OF_PIPES++;
+    };
+
+    addGameSounds = () => {
+        [
+            ["play"],
+            ["pause"],
+            ["collided", "0.5", "sound", ".flac"],
+            ["song", "0.1", "music"],
+            ["jump", "0.5"]
+        ].forEach(([soundName, volume, type, ext]) => {
+            this.soundMaker.addSound(soundName, volume, type, ext);
+        });
+    };
+
+    setCursorIcon = () => {
+        this.canvas.style.cursor = "url(img/cursor.png),auto";
     };
 }
 

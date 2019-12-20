@@ -3,7 +3,7 @@ import KeyService from "./KeyService.js";
 import { createAnimation } from "./animations.js";
 
 export default class Flappy_Bird extends Vector {
-    constructor(ctx) {
+    constructor(ctx, allowPlay) {
         super(100, ctx.canvas.height / 2);
         this.width = 50;
         this.height = 32;
@@ -12,6 +12,10 @@ export default class Flappy_Bird extends Vector {
         this.__GRAVITY = 0.6;
         this.velocity = 0;
         this.upForce = -8;
+
+        this.allowPlaying = allowPlay;
+
+        this.jumpSound = undefined;
 
         this.keyService = new KeyService();
 
@@ -23,12 +27,18 @@ export default class Flappy_Bird extends Vector {
         this.ctx.drawImage(image, this.x, this.y, this.width, this.height);
     };
 
-    update = (entitySprites, frameCounter) => {
+    update = (entitySprites, frameCounter, sound) => {
+        if (!this.jumpSound) this.jumpSound = sound;
         this.velocity += this.__GRAVITY;
         this.y += this.velocity;
         this.updateRadiusCoordinates(this.x, this.y);
         this.checkPosition();
         this.draw(entitySprites, frameCounter);
+    };
+
+    playSound = sound => {
+        sound.currentTime = 0;
+        sound.play();
     };
 
     updateRadiusCoordinates = (x, y) => {
@@ -52,14 +62,25 @@ export default class Flappy_Bird extends Vector {
         return false;
     };
     listenToJump = () => {
-        this.keyService.addListener(this.ctx.canvas);
+        this.keyService.addKeyListener(this.ctx.canvas);
+        this.keyService.addMap("Space", this.jump);
+        this.keyService.addClickListener(this.ctx.canvas, this.jump);
+    };
 
-        this.keyService.addMap("Space", keyState => {
-            if (keyState) {
-                this.velocity = 0;
-                this.velocity += this.upForce;
-            }
-        });
+    jump = keyState => {
+        if (keyState && this.allowPlaying === true) {
+            this.velocity = 0;
+            this.velocity += this.upForce;
+            this.playSound(this.jumpSound);
+        }
+    };
+
+    stopPlaying = () => {
+        this.allowPlaying = false;
+    };
+
+    startPlaying = () => {
+        this.allowPlaying = true;
     };
 
     collided = ({ upperPipe, bottomPipe }) => {

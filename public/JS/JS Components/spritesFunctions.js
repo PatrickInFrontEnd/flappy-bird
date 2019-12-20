@@ -55,6 +55,20 @@ async function getSpritesData() {
         });
 }
 
+async function getMenuCoordinates() {
+    const URL = "./img/menuCords.json";
+
+    return fetch(URL)
+        .then(res => {
+            if (!res.ok)
+                throw Error(`Response from ${URL} failed, ${res.statusText}`);
+            return res.json();
+        })
+        .catch(err => {
+            console.error(`Something went wrong. `, err);
+        });
+}
+
 async function createImage(filename) {
     const image = new Image();
 
@@ -66,4 +80,4 @@ async function createImage(filename) {
     });
 }
 
-export { createSprite };
+export { createSprite, getMenuCoordinates as getInterfaceData };
