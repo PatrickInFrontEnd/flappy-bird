@@ -5,11 +5,11 @@ class SoundMaker {
 
     addSound = (nameOfSong, sound, volume) => {
         try {
-            if (volume) sound.volume = volume;
             if (!sound)
                 throw Error(
                     "U have to put a sound in arguments list no one given."
                 );
+            if (volume) sound.volume = volume;
             this.sounds.set(nameOfSong, sound);
         } catch (error) {
             console.error("Something went wron with your Sound Maker:", error);

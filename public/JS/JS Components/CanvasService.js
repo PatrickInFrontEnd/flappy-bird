@@ -25,6 +25,7 @@ class Game_Engine {
         };
 
         this.sounds = sounds.map(([name, sound]) => ({ name, sound }));
+        console.log(this.sounds);
 
         this.allowPlaying = false;
 
@@ -96,7 +97,7 @@ class Game_Engine {
             });
     };
 
-    startDrawing = async () => {
+    startDrawing = () => {
         this.spritesGenerator.addSprites(
             "background",
             "darkBgLayer",
@@ -108,9 +109,9 @@ class Game_Engine {
 
         this.spritesGenerator.addSprite("bird-red", "entity");
 
-        const jumpSound = await this.soundMaker.getSound("jump");
-        const collidedSound = await this.soundMaker.getSound("collided");
-        const bgSong = await this.soundMaker.getSound("song");
+        const jumpSound = this.soundMaker.getSound("jump");
+        const collidedSound = this.soundMaker.getSound("collided");
+        const bgSong = this.soundMaker.getSound("song");
         bgSong.loop = "true";
 
         const [
@@ -120,7 +121,7 @@ class Game_Engine {
             bottomPipeColumn,
             bottomPipeSlot,
             entity
-        ] = await Promise.all(this.spritesGenerator.getAllSprites());
+        ] = Promise.all(this.spritesGenerator.getAllSprites());
 
         const props = {
             bgLayer,
@@ -219,14 +220,8 @@ class Game_Engine {
     };
 
     addGameSounds = () => {
-        [
-            ["play"],
-            ["pause"],
-            ["collided", "0.5", "sound", ".flac"],
-            ["song", "0.1", "music"],
-            ["jump", "0.5"]
-        ].forEach(([soundName, volume, type, ext]) => {
-            this.soundMaker.addSound(soundName, volume, type, ext);
+        this.sounds.forEach(({ name, sound }) => {
+            console.log(name, sound);
         });
     };
 
