@@ -48,8 +48,9 @@ export default class Pipe_Generator {
                 this.upperPipe.h -
                 upperPipeSlot.height * __VERTICAL_SCALE_OF_SLOTS,
             upperSlotWidth = this.upperPipe.w + 4,
-            upperSlotHeight = upperPipeSlot.height * __VERTICAL_SCALE_OF_SLOTS,
-            bottomSlotPosX = this.bottomPipe.x - 2,
+            upperSlotHeight = upperPipeSlot.height * __VERTICAL_SCALE_OF_SLOTS;
+
+        let bottomSlotPosX = this.bottomPipe.x - 2,
             bottomSlotPosY = this.bottomPipe.y,
             bottomSlotWidth = this.bottomPipe.w + 4,
             bottomSlotHeight =

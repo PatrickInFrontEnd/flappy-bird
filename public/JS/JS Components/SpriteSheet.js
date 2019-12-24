@@ -1,25 +1,29 @@
 import { createSprite } from "./spritesFunctions.js";
 
 class SpriteSheet_Generator {
-    constructor() {
+    constructor({ bgSpriteImg, entitySpriteImg, spritesJSON }) {
         this.spritesSheet = new Map();
+        this.images = { entity: entitySpriteImg, background: bgSpriteImg };
+        this.spriteJSON = spritesJSON;
     }
 
-    addSprite = (name, typeOfSprite) => {
+    addSprite = (name, type) => {
         if (this.spritesSheet.has(name)) return;
-        this.spritesSheet.set(name, createSprite(name, typeOfSprite));
+        const img =
+            type === "entity" ? this.images.entity : this.images.background;
+        this.spritesSheet.set(name, createSprite(name, img, this.spriteJSON));
     };
 
     addSprites = (typeOfSprite, ...names) => {
         names.forEach(name => this.addSprite(name, typeOfSprite));
     };
 
-    getSprite = async name => {
+    getSprite = name => {
         try {
             if (!this.spritesSheet.has(name))
                 throw Error("Incorrect name typed: " + name);
 
-            return this.spritesSheet.get(name);
+            return await this.spritesSheet.get(name);
         } catch (err) {
             console.error("Something went wrong. ", err);
         }

@@ -25,6 +25,7 @@ class Game_Engine {
         this.spritesGenerator = new SpriteSheet_Generator();
         this.soundMaker = new SoundMaker();
         this.menuInterface = new Game_Menu(this.ctx);
+        //this.setCallbacksAtTilesOfMenu();
 
         this.addGameSounds();
         this.setCursorIcon();
@@ -78,22 +79,6 @@ class Game_Engine {
             });
     };
 
-    drawGameMenu = (...tiles) => {
-        tiles.forEach(tile => {
-            this.ctx.drawImage(
-                tile,
-                0,
-                0,
-                tile.width,
-                tile.height,
-                0,
-                0,
-                tile.width * 2.5,
-                tile.height * 2.5
-            );
-        });
-    };
-
     startDrawing = async () => {
         this.spritesGenerator.addSprites(
             "background",
@@ -101,7 +86,7 @@ class Game_Engine {
             "upperPipeColumn",
             "upperPipeSlot",
             "bottomPipeColumn",
-            "bottomPipeSlot",
+            "bottomPipeSlot"
         );
 
         this.spritesGenerator.addSprite("bird-red", "entity");
@@ -225,6 +210,18 @@ class Game_Engine {
             ["jump", "0.5"]
         ].forEach(([soundName, volume, type, ext]) => {
             this.soundMaker.addSound(soundName, volume, type, ext);
+        });
+    };
+
+    setCallbacksAtTilesOfMenu = () => {
+        let isLoaded;
+        while (isLoaded === false) {
+            isLoaded = this.menuInterface.menuTiles.size > 0;
+        }
+        this.menuInterface.addCallbackOnTile("menuIcon", () => {
+            const tile = this.menuInterface.menuTiles.get("menuIcon");
+            this.ctx.fillStyle = "#f00";
+            this.ctx.fillRect(tile.x, tile.y, tile.width, tile.height);
         });
     };
 

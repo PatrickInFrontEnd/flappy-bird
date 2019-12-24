@@ -1,16 +1,12 @@
-const bgSpritesURL = "./img/sprites.png";
-const entitySpritesURL = "./img/entity_sprites.png";
-
-async function createSprite(nameOfSprite, typeOfSprite) {
+async function createSprite(nameOfSprite, spritesImage,spritesJSON) {
     try {
-        const URL = typeOfSprite === "entity" ? entitySpritesURL : bgSpritesURL;
 
-        const image = await createImage(URL);
+        const image = spritesImage;
 
         if (!image) throw Error("Image couldn't be loaded.");
 
-        const spritesData = await getSpritesData();
-        const bufferData = spritesData[nameOfSprite];
+        const spriteData = spritesJSON;
+        const bufferData = spriteData[nameOfSprite];
 
         if (!bufferData) throw Error("Wrong name of sprite: " + nameOfSprite);
 
