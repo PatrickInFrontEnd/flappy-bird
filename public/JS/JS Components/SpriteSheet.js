@@ -19,6 +19,7 @@ class SpriteSheet_Generator {
     };
 
     getSprite = name => {
+        //TODO REFACTOR THIS
         try {
             if (!this.spritesSheet.has(name))
                 throw Error("Incorrect name typed: " + name);
