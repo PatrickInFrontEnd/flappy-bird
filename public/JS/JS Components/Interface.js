@@ -1,16 +1,25 @@
 import SpriteSheet_Generator from "./SpriteSheet.js";
-import { getInterfaceData } from "./spritesFunctions.js";
 import { MenuTile } from "./MenuTile.js";
 import { alphaAnimation } from "./animations.js";
 
 class Game_Menu {
-    constructor(ctx) {
+    constructor(
+        ctx,
+        { bgSpriteImg, entitySpriteImg, spritesJSON },
+        interfaceData
+    ) {
         this.ctx = ctx;
         this.canvas = this.ctx.canvas;
         this.cw = this.canvas.width;
         this.ch = this.canvas.height;
 
-        this.spritesGenerator = new SpriteSheet_Generator();
+        this.interfaceData = interfaceData;
+
+        this.spritesGenerator = new SpriteSheet_Generator({
+            bgSpriteImg,
+            entitySpriteImg,
+            spritesJSON
+        });
 
         this.names = [
             "menuIcon",
@@ -29,9 +38,7 @@ class Game_Menu {
         this.addMenuTiles();
     }
 
-    addMenuTiles = async () => {
-        const menuSpritesData = await getInterfaceData();
-
+    addMenuTiles = () => {
         this.spritesGenerator.addSprites("menuSprites", ...this.names);
 
         const [
@@ -44,7 +51,7 @@ class Game_Menu {
             flappyBirdTitle,
             tapBoardIcon,
             scoreBoard
-        ] = await Promise.all(this.spritesGenerator.getAllSprites());
+        ] = this.spritesGenerator.getAllSprites(this.names);
 
         const sprites = {
             menuIcon,
@@ -59,12 +66,12 @@ class Game_Menu {
         };
 
         this.names.forEach(spriteName => {
-            const { width, height } = menuSpritesData[spriteName];
+            const { width, height } = this.interfaceData[spriteName];
             this.addTile(sprites[spriteName], spriteName, width, height);
             this.menuTiles.get(spriteName).setupCoordinates(0, 0);
         });
 
-        this.setPositionsOfMenuTiles(menuSpritesData);
+        this.setPositionsOfMenuTiles(this.interfaceData);
     };
 
     setPositionsOfMenuTiles = spritesData => {

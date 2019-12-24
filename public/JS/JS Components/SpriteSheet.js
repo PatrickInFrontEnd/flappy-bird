@@ -3,7 +3,11 @@ import { createSprite } from "./spritesFunctions.js";
 class SpriteSheet_Generator {
     constructor({ bgSpriteImg, entitySpriteImg, spritesJSON }) {
         this.spritesSheet = new Map();
-        this.images = { entity: entitySpriteImg, background: bgSpriteImg };
+
+        this.images = {
+            entity: entitySpriteImg,
+            background: bgSpriteImg
+        };
         this.spriteJSON = spritesJSON;
     }
 
@@ -19,24 +23,20 @@ class SpriteSheet_Generator {
     };
 
     getSprite = name => {
-        //TODO REFACTOR THIS
         try {
             if (!this.spritesSheet.has(name))
                 throw Error("Incorrect name typed: " + name);
 
-            return await this.spritesSheet.get(name);
+            return this.spritesSheet.get(name);
         } catch (err) {
             console.error("Something went wrong. ", err);
         }
     };
 
-    getAllSprites = () => {
-        const names = this.spritesSheet.keys();
-        const sprites = [];
-
-        for (let name of names) {
-            sprites.push(this.getSprite(name));
-        }
+    getAllSprites = (...names) => {
+        const sprites = names.map(name => {
+            return this.getSprite(name);
+        });
 
         return sprites;
     };

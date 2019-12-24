@@ -1,25 +1,26 @@
-import { createSound } from "./songFunctions.js";
-
 class SoundMaker {
     constructor() {
         this.sounds = new Map();
     }
 
-    addSound = (nameOfSong, volume, type, ext) => {
+    addSound = (nameOfSong, sound, volume) => {
         try {
-            this.sounds.set(
-                nameOfSong,
-                createSound(nameOfSong, volume, type, ext)
-            );
+            if (volume) sound.volume = volume;
+            if (!sound)
+                throw Error(
+                    "U have to put a sound in arguments list no one given."
+                );
+            this.sounds.set(nameOfSong, sound);
         } catch (error) {
             console.error("Something went wron with your Sound Maker:", error);
         }
     };
 
-    getSound = async name => {
+    getSound = name => {
         try {
-            if (!this.sounds.has(name)) throw Error("Name is incorrect.");
-            return await this.sounds.get(name);
+            if (!this.sounds.has(name))
+                throw Error(`Name ${name} is incorrect.`);
+            return this.sounds.get(name);
         } catch (error) {
             console.error("Something went wron with your Sound Maker:", error);
         }
@@ -33,6 +34,6 @@ class SoundMaker {
     stopSound = sound => {
         sound.currentTime = 0;
         sound.pause();
-    }
+    };
 }
 export { SoundMaker };

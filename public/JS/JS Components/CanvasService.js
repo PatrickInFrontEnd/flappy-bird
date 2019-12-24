@@ -5,13 +5,26 @@ import { SoundMaker } from "./soundMaker.js";
 import Game_Menu from "./Interface.js";
 
 class Game_Engine {
-    constructor(canvas) {
+    constructor(
+        canvas,
+        { bgSpriteImg, entitySpriteImg, spritesJSON },
+        sounds,
+        interfaceData
+    ) {
         this.canvas = canvas;
         this.cw = this.canvas.width;
         this.ch = this.canvas.height;
         this.ctx = this.canvas.getContext("2d");
 
         this.__SPEED_OF_PIPES = 3;
+
+        this.spritesData = {
+            bgSpriteImg,
+            entitySpriteImg,
+            spritesJSON
+        };
+
+        this.sounds = sounds.map(([name, sound]) => ({ name, sound }));
 
         this.allowPlaying = false;
 
@@ -22,9 +35,13 @@ class Game_Engine {
         //It's a determinant of when we should create and add new pipe to the game, also helps with animation
         this.countFrame = 0;
 
-        this.spritesGenerator = new SpriteSheet_Generator();
+        this.spritesGenerator = new SpriteSheet_Generator(this.spritesData);
         this.soundMaker = new SoundMaker();
-        this.menuInterface = new Game_Menu(this.ctx);
+        this.menuInterface = new Game_Menu(
+            this.ctx,
+            this.spritesData,
+            interfaceData
+        );
         //this.setCallbacksAtTilesOfMenu();
 
         this.addGameSounds();

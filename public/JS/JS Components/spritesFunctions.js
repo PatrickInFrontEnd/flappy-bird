@@ -1,6 +1,5 @@
-async function createSprite(nameOfSprite, spritesImage,spritesJSON) {
+async function createSprite(nameOfSprite, spritesImage, spritesJSON) {
     try {
-
         const image = spritesImage;
 
         if (!image) throw Error("Image couldn't be loaded.");
@@ -51,7 +50,7 @@ async function getSpritesData() {
         });
 }
 
-async function getMenuCoordinates() {
+async function getInterfaceData() {
     const URL = "./img/menuCords.json";
 
     return fetch(URL)
@@ -76,4 +75,4 @@ async function createImage(filename) {
     });
 }
 
-export { createSprite, getMenuCoordinates as getInterfaceData };
+export { createImage, createSprite, getInterfaceData, getSpritesData };
