@@ -10,11 +10,6 @@ import { createSound } from "../JS Components/songFunctions.js";
 const d = document;
 const canvas = d.querySelector("#app");
 let app;
-/* canvas.addEventListener("click", () => {
-    if (app.allowPlaying === false) {
-        app.startDrawing();
-    }
-}); */
 
 window.addEventListener("load", loadAssets);
 
@@ -35,17 +30,13 @@ async function loadAssets() {
         createImage(entitySpritesURL),
         getSpritesData(),
         getInterfaceData(),
-        createSound("song", 0.6, "music"),
-        createSound("collided", 0.8, "sounds", ".flac"),
+        createSound("song", 0.2, "music"),
+        createSound("collided", 0.4, "sounds", ".flac"),
         createSound("gameover", 0.6, "sounds"),
-        createSound("jump", 0.5, "sounds"),
-        createSound("pause", 0.6, "sounds"),
-        createSound("play", 0.6, "sounds")
+        createSound("jump", 1.0, "sounds"),
+        createSound("pause", 0.8, "sounds"),
+        createSound("play", 0.8, "sounds")
     ]);
-
-    /* canvas.addEventListener("click", () => {
-        jumpSound.play();
-    }); */
 
     const spritesData = { bgSpriteImg, entitySpriteImg, spritesJSON };
     const sounds = [
@@ -58,4 +49,5 @@ async function loadAssets() {
     ];
 
     app = new Game_Engine(canvas, spritesData, sounds, interfaceJSON);
+    window.app = app;
 }

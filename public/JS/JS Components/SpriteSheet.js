@@ -24,8 +24,9 @@ class SpriteSheet_Generator {
 
     getSprite = name => {
         try {
-            if (!this.spritesSheet.has(name))
+            if (!this.spritesSheet.has(name)) {
                 throw Error("Incorrect name typed: " + name);
+            }
 
             return this.spritesSheet.get(name);
         } catch (err) {

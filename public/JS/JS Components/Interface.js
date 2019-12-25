@@ -51,7 +51,7 @@ class Game_Menu {
             flappyBirdTitle,
             tapBoardIcon,
             scoreBoard
-        ] = this.spritesGenerator.getAllSprites(this.names);
+        ] = this.spritesGenerator.getAllSprites(...this.names);
 
         const sprites = {
             menuIcon,
@@ -67,8 +67,11 @@ class Game_Menu {
 
         this.names.forEach(spriteName => {
             const { width, height } = this.interfaceData[spriteName];
+
             this.addTile(sprites[spriteName], spriteName, width, height);
             this.menuTiles.get(spriteName).setupCoordinates(0, 0);
+            //TODO: create method called addListener (on canvas)
+            this.menuTiles.get(spriteName).addListener(this.ctx.canvas);
         });
 
         this.setPositionsOfMenuTiles(this.interfaceData);
@@ -121,9 +124,11 @@ class Game_Menu {
     };
 
     drawGameMenu = ctx => {
+        //TODO: create callbacks and setup behaviour when clicked on canvas
         const tiles = ["menuIcon", "playButton", "flappyBirdTitle"].map(
             name => {
                 const tile = this.menuTiles.get(name);
+                tile.showTile();
                 return tile;
             }
         );
@@ -138,8 +143,8 @@ class Game_Menu {
         alphaAnimation("out", ctx, this.drawGameMenu);
     };
 
-    addCallbackOnTile = (name, callback) => {
-        const tile = this.menuTiles.get(name);
+    addCallbackOnTile = (nameOfTile, callback) => {
+        const tile = this.menuTiles.get(nameOfTile);
         tile.addCallback(callback);
     };
 }

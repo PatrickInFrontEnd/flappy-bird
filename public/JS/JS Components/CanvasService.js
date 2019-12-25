@@ -25,7 +25,6 @@ class Game_Engine {
         };
 
         this.sounds = sounds.map(([name, sound]) => ({ name, sound }));
-        console.log(this.sounds);
 
         this.allowPlaying = false;
 
@@ -37,7 +36,9 @@ class Game_Engine {
         this.countFrame = 0;
 
         this.spritesGenerator = new SpriteSheet_Generator(this.spritesData);
+
         this.soundMaker = new SoundMaker();
+
         this.menuInterface = new Game_Menu(
             this.ctx,
             this.spritesData,
@@ -98,16 +99,18 @@ class Game_Engine {
     };
 
     startDrawing = () => {
-        this.spritesGenerator.addSprites(
-            "background",
+        const names = [
             "darkBgLayer",
             "upperPipeColumn",
             "upperPipeSlot",
             "bottomPipeColumn",
             "bottomPipeSlot"
-        );
+        ];
+
+        this.spritesGenerator.addSprites("background", ...names);
 
         this.spritesGenerator.addSprite("bird-red", "entity");
+        const entity = this.spritesGenerator.getSprite("bird-red");
 
         const jumpSound = this.soundMaker.getSound("jump");
         const collidedSound = this.soundMaker.getSound("collided");
@@ -119,9 +122,8 @@ class Game_Engine {
             upperPipeColumn,
             upperPipeSlot,
             bottomPipeColumn,
-            bottomPipeSlot,
-            entity
-        ] = Promise.all(this.spritesGenerator.getAllSprites());
+            bottomPipeSlot
+        ] = this.spritesGenerator.getAllSprites(...names);
 
         const props = {
             bgLayer,
@@ -132,6 +134,7 @@ class Game_Engine {
             entity,
             sounds: { jumpSound, collidedSound, bgSong }
         };
+
         this.soundMaker.playSound(bgSong);
         this.startPainting();
         this.draw(props);
@@ -221,15 +224,12 @@ class Game_Engine {
 
     addGameSounds = () => {
         this.sounds.forEach(({ name, sound }) => {
-            console.log(name, sound);
+            this.soundMaker.addSound(name, sound);
         });
     };
 
+    //TODO:
     setCallbacksAtTilesOfMenu = () => {
-        let isLoaded;
-        while (isLoaded === false) {
-            isLoaded = this.menuInterface.menuTiles.size > 0;
-        }
         this.menuInterface.addCallbackOnTile("menuIcon", () => {
             const tile = this.menuInterface.menuTiles.get("menuIcon");
             this.ctx.fillStyle = "#f00";

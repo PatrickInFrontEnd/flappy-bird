@@ -1,4 +1,4 @@
-async function createSprite(nameOfSprite, spritesImage, spritesJSON) {
+function createSprite(nameOfSprite, spritesImage, spritesJSON) {
     try {
         const image = spritesImage;
 

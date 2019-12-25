@@ -6,8 +6,8 @@ class MenuTile extends Vector {
         this.image = sprite;
         this.width = width;
         this.height = height;
-        this.isHidden = false;
-        this.callback = null;
+        this.isHidden = true;
+        this.callback = undefined;
     }
 
     //FIXME: create function that will paint menu tiles from 0 opacity to 1 and from 1 to 0 all tiles together (paint tiles for 0.1 opacity, clearRect etc.)
@@ -32,7 +32,7 @@ class MenuTile extends Vector {
         this.isHidden = true;
     };
     showTile = () => {
-        this.isHidden = true;
+        this.isHidden = false;
     };
 
     setupCoordinates = (x, y) => {
@@ -41,6 +41,19 @@ class MenuTile extends Vector {
 
     addCallback = callback => {
         this.callback = callback;
+    };
+
+    addListener = element => {
+        element.addEventListener("mousemove", e => {
+            const { layerX: x, layerY: y } = e;
+            if (x >= this.x && x <= this.x + this.width) {
+                if (y >= this.y && y <= this.y + this.height) {
+                    if (this.isHidden !== true) {
+                        console.log("IM ON");
+                    }
+                }
+            }
+        });
     };
 }
 export { MenuTile };
