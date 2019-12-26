@@ -24,7 +24,8 @@ async function loadAssets() {
         gameOverSound,
         jumpSound,
         pauseSound,
-        playSound
+        playSound,
+        menuClickSound
     ] = await Promise.all([
         createImage(bgSpritesURL),
         createImage(entitySpritesURL),
@@ -35,7 +36,8 @@ async function loadAssets() {
         createSound("gameover", 0.6, "sounds"),
         createSound("jump", 1.0, "sounds"),
         createSound("pause", 0.8, "sounds"),
-        createSound("play", 0.8, "sounds")
+        createSound("play", 0.8, "sounds"),
+        createSound("menuClick", 0.8, "sounds")
     ]);
 
     const spritesData = { bgSpriteImg, entitySpriteImg, spritesJSON };
@@ -45,7 +47,8 @@ async function loadAssets() {
         ["gameover", gameOverSound],
         ["jump", jumpSound],
         ["pause", pauseSound],
-        ["play", playSound]
+        ["play", playSound],
+        ["menuClick", menuClickSound]
     ];
 
     app = new Game_Engine(canvas, spritesData, sounds, interfaceJSON);

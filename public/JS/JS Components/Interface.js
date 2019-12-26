@@ -6,7 +6,9 @@ class Game_Menu {
     constructor(
         ctx,
         { bgSpriteImg, entitySpriteImg, spritesJSON },
-        interfaceData
+        interfaceData,
+        { bgMethod, sprite },
+        listener
     ) {
         this.ctx = ctx;
         this.canvas = this.ctx.canvas;
@@ -14,6 +16,7 @@ class Game_Menu {
         this.ch = this.canvas.height;
 
         this.interfaceData = interfaceData;
+        this.listenersAreSetUp = false;
 
         this.spritesGenerator = new SpriteSheet_Generator({
             bgSpriteImg,
@@ -21,8 +24,11 @@ class Game_Menu {
             spritesJSON
         });
 
-        this.names = [
+        this.bgLayer = { bgMethod, sprite };
+
+        this.tileNames = [
             "menuIcon",
+            "okayIcon",
             "pauseIcon",
             "playIcon",
             "playButton",
@@ -36,13 +42,15 @@ class Game_Menu {
         this.menuTiles = new Map();
 
         this.addMenuTiles();
+        this.initializeMenu(this.ctx, this.bgLayer, listener);
     }
 
     addMenuTiles = () => {
-        this.spritesGenerator.addSprites("menuSprites", ...this.names);
+        this.spritesGenerator.addSprites("menuSprites", ...this.tileNames);
 
         const [
             menuIcon,
+            okayIcon,
             pauseIcon,
             playIcon,
             playButton,
@@ -51,10 +59,11 @@ class Game_Menu {
             flappyBirdTitle,
             tapBoardIcon,
             scoreBoard
-        ] = this.spritesGenerator.getAllSprites(...this.names);
+        ] = this.spritesGenerator.getAllSprites(...this.tileNames);
 
         const sprites = {
             menuIcon,
+            okayIcon,
             pauseIcon,
             playIcon,
             playButton,
@@ -65,21 +74,28 @@ class Game_Menu {
             scoreBoard
         };
 
-        this.names.forEach(spriteName => {
+        this.tileNames.forEach(spriteName => {
             const { width, height } = this.interfaceData[spriteName];
 
             this.addTile(sprites[spriteName], spriteName, width, height);
             this.menuTiles.get(spriteName).setupCoordinates(0, 0);
-            //TODO: create method called addListener (on canvas)
-            this.menuTiles.get(spriteName).addListener(this.ctx.canvas);
         });
 
         this.setPositionsOfMenuTiles(this.interfaceData);
     };
 
+    addTileListeners = (callback, ...names) => {
+        names.forEach(spriteName => {
+            this.menuTiles
+                .get(spriteName)
+                .addListener(this.ctx.canvas, callback);
+        });
+    };
+
     setPositionsOfMenuTiles = spritesData => {
         const [
             menuIcon,
+            okayIcon,
             pauseIcon,
             playIcon,
             playButton,
@@ -88,35 +104,42 @@ class Game_Menu {
             flappyBirdTitle,
             tapBoardIcon,
             scoreBoard
-        ] = this.names.map(name => this.menuTiles.get(name));
+        ] = this.tileNames.map(name => this.menuTiles.get(name));
 
         //NOTE: Setting up x and y coordinates to draw it at ctx
         const halfW = this.cw / 2;
         const halfH = this.ch / 2;
 
-        pauseIcon.setupCoordinates(spritesData["scoreBoard"].width + 10, 0);
-        playIcon.setupCoordinates(pauseIcon.x, pauseIcon.y);
-        playButton.setupCoordinates(
-            halfW - playButton.width / 2,
-            halfH - playButton.height / 2
-        );
-        menuIcon.setupCoordinates(
-            halfW - menuIcon.width / 2,
-            halfH + playButton.height + 50
-        );
-        getReadyTitle.setupCoordinates(halfW - getReadyTitle.width / 2, 100);
-        gameOverTitle.setupCoordinates(halfW - gameOverTitle.width / 2, 175);
-        flappyBirdTitle.setupCoordinates(
-            halfW - flappyBirdTitle.width / 2,
-            100
-        );
-        tapBoardIcon.setupCoordinates(
-            halfW - tapBoardIcon.width / 2,
-            halfH - tapBoardIcon.width / 2
-        );
-        scoreBoard.setupCoordinates(0, 0);
-        this.showMenu(this.ctx);
-        //TODO CREATE INTERFACE ANIMATIONS, CREATE LOGIC FOR BEHAVIOUR OF MENU TILES
+        const setup = [
+            [pauseIcon, spritesData["scoreBoard"].width + 10, 0],
+            [playIcon, pauseIcon.x, pauseIcon.y],
+            [
+                playButton,
+                halfW - playButton.width / 2,
+                halfH - playButton.height / 2
+            ],
+            [
+                menuIcon,
+                halfW - menuIcon.width / 2,
+                halfH + playButton.height + 50
+            ],
+            [
+                okayIcon,
+                halfW - okayIcon.width / 2,
+                halfH + playButton.height + 50
+            ],
+            [getReadyTitle, halfW - getReadyTitle.width / 2, 100],
+            [gameOverTitle, halfW - gameOverTitle.width / 2, 100],
+            [flappyBirdTitle, halfW - flappyBirdTitle.width / 2, 100],
+            [
+                tapBoardIcon,
+                halfW - tapBoardIcon.width / 2,
+                halfH - tapBoardIcon.width / 2
+            ],
+            [scoreBoard, 0, 0]
+        ];
+
+        setup.forEach(([tile, x, y]) => tile.setupCoordinates(x, y));
     };
 
     addTile = (sprite, name, w, h) => {
@@ -125,14 +148,27 @@ class Game_Menu {
 
     drawGameMenu = ctx => {
         //TODO: create callbacks and setup behaviour when clicked on canvas
-        const tiles = ["menuIcon", "playButton", "flappyBirdTitle"].map(
-            name => {
-                const tile = this.menuTiles.get(name);
-                tile.showTile();
-                return tile;
+        ["menuIcon", "playButton", "flappyBirdTitle"].forEach(name => {
+            const tile = this.menuTiles.get(name);
+            tile.showTile(ctx);
+        });
+    };
+
+    initializeMenu = (ctx, { bgMethod, sprite }, listenToTiles) => {
+        alphaAnimation(
+            "in",
+            ctx,
+            ctx => {
+                bgMethod(sprite);
+                this.drawGameMenu(ctx);
+            },
+            () => {
+                if (this.listenersAreSetUp === false) {
+                    listenToTiles();
+                    this.listenersAreSetUp = true;
+                }
             }
         );
-        tiles.forEach(tile => tile.drawTile(ctx));
     };
 
     showMenu = ctx => {
@@ -140,12 +176,41 @@ class Game_Menu {
     };
 
     hideMenu = ctx => {
-        alphaAnimation("out", ctx, this.drawGameMenu);
+        ["menuIcon", "playButton", "flappyBirdTitle"].forEach(name => {
+            const tile = this.menuTiles.get(name);
+            tile.hideTile(ctx);
+        });
     };
 
     addCallbackOnTile = (nameOfTile, callback) => {
         const tile = this.menuTiles.get(nameOfTile);
         tile.addCallback(callback);
+    };
+
+    showTile = (name, ctx = this.ctx) => {
+        const tile = this.menuTiles.get(name);
+        tile.showTile(ctx);
+    };
+
+    hideTile = (name, ctx = this.ctx) => {
+        const tile = this.menuTiles.get(name);
+        tile.hideTile(ctx);
+    };
+
+    // showSubMenu = (lastFrame, ctx) => {};
+
+    showReadyTitle = ctx => {
+        if (ctx) {
+            this.showTile("getReadyTitle", ctx);
+        }
+        this.showTile("getReadyTitle");
+    };
+
+    hideReadyTitle = ctx => {
+        if (ctx) {
+            this.hideTile("getReadyTitle", ctx);
+        }
+        this.hideTile("getReadyTitle");
     };
 }
 

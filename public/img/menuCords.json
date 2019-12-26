@@ -3,6 +3,10 @@
         "width": 120,
         "height": 45
     },
+    "okayIcon": {
+        "width": 120,
+        "height": 45
+    },
     "pauseIcon": {
         "width": 60,
         "height": 60

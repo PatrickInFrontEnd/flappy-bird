@@ -75,4 +75,4 @@ async function createImage(filename) {
     });
 }
 
-export { createImage, createSprite, getInterfaceData, getSpritesData };
+export { createImage,createBuffer, createSprite, getInterfaceData, getSpritesData };

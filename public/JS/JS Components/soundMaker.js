@@ -12,7 +12,7 @@ class SoundMaker {
             if (volume) sound.volume = volume;
             this.sounds.set(nameOfSong, sound);
         } catch (error) {
-            console.error("Something went wron with your Sound Maker:", error);
+            console.error("Something went wrong with your Sound Maker:", error);
         }
     };
 
@@ -22,7 +22,7 @@ class SoundMaker {
                 throw Error(`Name ${name} is incorrect.`);
             return this.sounds.get(name);
         } catch (error) {
-            console.error("Something went wron with your Sound Maker:", error);
+            console.error("Something went wrong with your Sound Maker:", error);
         }
     };
 

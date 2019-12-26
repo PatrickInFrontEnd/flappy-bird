@@ -13,7 +13,7 @@ function linearAnimation() {
     //Higher order function frame-index, frameX > destination point ? x-- : x++; etc.
 }
 
-function alphaAnimation(type, ctx, drawCallback, iterator) {
+function alphaAnimation(type, ctx, drawCallback, optionalCallback, iterator) {
     let i = iterator;
     if (type === "in") {
         if (iterator === undefined) i = 0;
@@ -25,10 +25,13 @@ function alphaAnimation(type, ctx, drawCallback, iterator) {
             drawCallback(ctx);
             i++;
             requestAnimationFrame(() => {
-                alphaAnimation("in", ctx, drawCallback, i);
+                alphaAnimation("in", ctx, drawCallback, optionalCallback, i);
             });
         } else {
             ctx.globalAlpha = 1;
+            if (optionalCallback) {
+                optionalCallback(ctx);
+            }
             return;
         }
     } else if (type === "out") {
@@ -40,10 +43,13 @@ function alphaAnimation(type, ctx, drawCallback, iterator) {
             drawCallback(ctx);
             i--;
             requestAnimationFrame(() => {
-                alphaAnimation("out", ctx, drawCallback, i);
+                alphaAnimation("out", ctx, drawCallback, optionalCallback, i);
             });
         } else {
             ctx.globalAlpha = 1;
+            if (optionalCallback) {
+                optionalCallback(ctx);
+            }
             return;
         }
     } else {
