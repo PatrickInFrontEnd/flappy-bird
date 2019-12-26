@@ -50,7 +50,7 @@ class MenuTile extends Vector {
     };
     showTile = ctx => {
         this.allowClick();
-        this.animateHiddenTile(ctx);
+        this.drawTile(ctx);
     };
 
     allowClick = () => {

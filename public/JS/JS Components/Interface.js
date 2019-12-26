@@ -26,18 +26,9 @@ class Game_Menu {
 
         this.bgLayer = { bgMethod, sprite };
 
-        this.tileNames = [
-            "menuIcon",
-            "okayIcon",
-            "pauseIcon",
-            "playIcon",
-            "playButton",
-            "getReadyTitle",
-            "gameOverTitle",
-            "flappyBirdTitle",
-            "tapBoardIcon",
-            "scoreBoard"
-        ];
+        this.menuTileNames = Array.from(Object.keys(spritesJSON)).filter(
+            name => spritesJSON[name].type === "menu"
+        );
 
         this.menuTiles = new Map();
 
@@ -46,9 +37,10 @@ class Game_Menu {
     }
 
     addMenuTiles = () => {
-        this.spritesGenerator.addSprites("menuSprites", ...this.tileNames);
+        this.spritesGenerator.addSprites("menuSprites", ...this.menuTileNames);
 
         const [
+            scoreBoard,
             menuIcon,
             okayIcon,
             pauseIcon,
@@ -57,11 +49,11 @@ class Game_Menu {
             getReadyTitle,
             gameOverTitle,
             flappyBirdTitle,
-            tapBoardIcon,
-            scoreBoard
-        ] = this.spritesGenerator.getAllSprites(...this.tileNames);
+            tapBoardIcon
+        ] = this.spritesGenerator.getAllSprites(...this.menuTileNames);
 
         const sprites = {
+            scoreBoard,
             menuIcon,
             okayIcon,
             pauseIcon,
@@ -70,11 +62,10 @@ class Game_Menu {
             getReadyTitle,
             gameOverTitle,
             flappyBirdTitle,
-            tapBoardIcon,
-            scoreBoard
+            tapBoardIcon
         };
 
-        this.tileNames.forEach(spriteName => {
+        this.menuTileNames.forEach(spriteName => {
             const { width, height } = this.interfaceData[spriteName];
 
             this.addTile(sprites[spriteName], spriteName, width, height);
@@ -84,16 +75,9 @@ class Game_Menu {
         this.setPositionsOfMenuTiles(this.interfaceData);
     };
 
-    addTileListeners = (callback, ...names) => {
-        names.forEach(spriteName => {
-            this.menuTiles
-                .get(spriteName)
-                .addListener(this.ctx.canvas, callback);
-        });
-    };
-
     setPositionsOfMenuTiles = spritesData => {
         const [
+            scoreBoard,
             menuIcon,
             okayIcon,
             pauseIcon,
@@ -102,9 +86,8 @@ class Game_Menu {
             getReadyTitle,
             gameOverTitle,
             flappyBirdTitle,
-            tapBoardIcon,
-            scoreBoard
-        ] = this.tileNames.map(name => this.menuTiles.get(name));
+            tapBoardIcon
+        ] = this.menuTileNames.map(name => this.menuTiles.get(name));
 
         //NOTE: Setting up x and y coordinates to draw it at ctx
         const halfW = this.cw / 2;
@@ -112,7 +95,7 @@ class Game_Menu {
 
         const setup = [
             [pauseIcon, spritesData["scoreBoard"].width + 10, 0],
-            [playIcon, pauseIcon.x, pauseIcon.y],
+            [playIcon, spritesData["scoreBoard"].width + 10, 0],
             [
                 playButton,
                 halfW - playButton.width / 2,
@@ -154,7 +137,11 @@ class Game_Menu {
         });
     };
 
-    initializeMenu = (ctx, { bgMethod, sprite }, listenToTiles) => {
+    initializeMenu = (
+        ctx = this.ctx,
+        { bgMethod, sprite } = this.bgLayer,
+        listenToTiles
+    ) => {
         alphaAnimation(
             "in",
             ctx,
@@ -197,7 +184,26 @@ class Game_Menu {
         tile.hideTile(ctx);
     };
 
+    getTile = name => this.menuTiles.get(name);
     // showSubMenu = (lastFrame, ctx) => {};
+
+    showSubMenu = ctx => {
+        ["gameOverTitle", "playButton", "okayIcon", "scoreBoard"].forEach(
+            name => {
+                const tile = this.menuTiles.get(name);
+                tile.showTile(ctx);
+            }
+        );
+    };
+
+    hideSubMenu = ctx => {
+        ["gameOverTitle", "playButton", "okayIcon", "scoreBoard"].forEach(
+            name => {
+                const tile = this.menuTiles.get(name);
+                tile.hideTile(ctx);
+            }
+        );
+    };
 
     showReadyTitle = ctx => {
         if (ctx) {

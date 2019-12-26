@@ -66,8 +66,6 @@ export default class Flappy_Bird extends Vector {
         return false;
     };
     listenToJump = () => {
-        this.keyService.addKeyListener(this.ctx.canvas);
-        this.keyService.addMap("Space", this.jump);
         this.keyService.addClickListener(this.ctx.canvas, this.jump);
     };
 
