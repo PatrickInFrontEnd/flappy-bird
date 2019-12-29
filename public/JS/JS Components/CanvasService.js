@@ -5,6 +5,7 @@ import { createBuffer } from "./spritesFunctions.js";
 import { SoundMaker } from "./soundMaker.js";
 import Game_Menu from "./Interface.js";
 import { alphaAnimation } from "./animations.js";
+import KeyService from "./KeyService.js";
 
 class Game_Engine {
     constructor(
@@ -26,6 +27,7 @@ class Game_Engine {
             spritesJSON
         };
 
+        this.keyService = new KeyService();
         this.sounds = sounds.map(([name, sound]) => ({ name, sound }));
         //TODO: figure out how to simplify this API
 
@@ -56,18 +58,27 @@ class Game_Engine {
 
         this.menuSpriteNames = Array.from(
             Object.keys(this.spritesData.spritesJSON)
-        ).filter(name => this.spritesData.spritesJSON[name].type === "menu");
+        )
+            .filter(name => this.spritesData.spritesJSON[name].type === "menu")
+            .concat(
+                Array.from(Object.keys(this.spritesData.spritesJSON)).filter(
+                    name =>
+                        this.spritesData.spritesJSON[name].type === "birdSkin"
+                )
+            );
 
         this.lastFrame = undefined;
 
         this.gameProps = undefined;
+
+        this.typeOfBg = "light";
 
         this.allowPlaying = false;
 
         this.pipesArray = [];
 
         this.bird = new Flappy_Bird(this.ctx, this.allowPlaying);
-        this.skin = "red";
+        this.skin = "yellow";
         this.skinOfBird = "bird-" + this.skin;
         this.birdSkins = ["bird-red", "bird-blue", "bird-yellow", "bird-gray"];
 
@@ -121,6 +132,7 @@ class Game_Engine {
 
     draw = ({
         //NOTE: Ready sprites && sounds
+        lightBgLayer,
         bgLayer,
         upperPipeColumn,
         upperPipeSlot,
@@ -139,8 +151,9 @@ class Game_Engine {
 
         //NOTE: pushing pipes in appropriate distances and delete them when behind the canvas
         this.handlePipes();
-        this.createBgLayer(bgLayer);
+        const sprite = this.typeOfBg === "light" ? lightBgLayer : bgLayer;
 
+        this.createBgLayer(sprite);
         this.bird.update(entity, this.countFrame, jumpSound);
 
         this.drawPipes({
@@ -164,6 +177,7 @@ class Game_Engine {
                 pauseIcon.showTile(this.ctx);
                 requestAnimationFrame(() => {
                     this.draw({
+                        lightBgLayer,
                         bgLayer,
                         upperPipeColumn,
                         upperPipeSlot,
@@ -183,14 +197,17 @@ class Game_Engine {
 
     pauseGame = () => {
         this.soundMaker.playSound(this.soundMaker.getSound("pause"));
-        this.bird.keyService.removeClickListener(this.canvas);
+        requestAnimationFrame(() => {
+            this.menuInterface.showTile("scoreBoard");
+        });
+        this.keyService.removeClickListener(this.canvas);
         this.isGamePaused = true;
     };
 
     resumeGame = () => {
         this.soundMaker.playSound(this.soundMaker.getSound("play"));
         this.isGamePaused = false;
-        this.bird.keyService.addClickListener(this.canvas, this.bird.jump);
+        this.keyService.addClickListener(this.canvas, this.bird.jump);
         requestAnimationFrame(() => {
             this.draw(this.gameProps);
         });
@@ -244,6 +261,15 @@ class Game_Engine {
 
     play = () => {
         this.startDrawing();
+        this.keyService.addKeyListener(this.canvas);
+        this.keyService.addKeyMapping("Escape", keystate => {
+            if (this.isGamePaused === true && keystate) {
+                this.resumeGame();
+            } else if (this.isGamePaused === false && keystate) {
+                this.pauseGame();
+            }
+        });
+        this.listenToJump();
         this.bird.jump(1);
         this.canvas.removeEventListener("mousedown", this.play);
     };
@@ -257,6 +283,7 @@ class Game_Engine {
 
     banPainting = bgSong => {
         this.allowPlaying = false;
+        this.keyService.removeKeyListener(this.canvas);
         this.lastFrame = createBuffer(this.canvas, {
             sx: 0,
             sy: 0,
@@ -307,6 +334,10 @@ class Game_Engine {
         });
     };
 
+    listenToJump = () => {
+        this.keyService.addClickListener(this.ctx.canvas, this.bird.jump);
+    };
+
     listener = (element = this.canvas) => {
         try {
             element.addEventListener("mousedown", e => {
@@ -329,6 +360,7 @@ class Game_Engine {
                                     tile.callback &&
                                     this.allowedToClickAtMenu === true
                                 ) {
+                                    this.allowedToClickAtMenu = false;
                                     tile.callback();
                                 }
                             }
@@ -358,7 +390,12 @@ class Game_Engine {
                             "in",
                             ctx,
                             ctx => {
-                                this.createBgLayer(this.gameProps.bgLayer);
+                                const sprite =
+                                    this.typeOfBg === "light"
+                                        ? this.gameProps.lightBgLayer
+                                        : this.gameProps.bgLayer;
+                                this.createBgLayer(sprite);
+
                                 this.bird.initDrawFrame(
                                     this.gameProps.entity[0],
                                     ctx
@@ -390,31 +427,105 @@ class Game_Engine {
 
         this.menuInterface.addCallbackOnTile("menuIcon", () => {
             //TODO: Create callback for this tile
-            this.allowedToClickAtMenu = false;
             this.soundMaker.playSound(clickSound);
-            this.allowedToClickAtMenu = true;
+
+            alphaAnimation(
+                "out",
+                this.ctx,
+                ctx => {
+                    this.createBgLayer(this.gameProps.bgLayer);
+                    this.menuInterface.hideMenu(ctx);
+                },
+                ctx => {
+                    alphaAnimation(
+                        "in",
+                        ctx,
+                        ctx => {
+                            this.createBgLayer(this.gameProps.bgLayer);
+                            this.menuInterface.showBirdSkins(ctx);
+                            this.menuInterface.showTile("menuOkayIcon");
+                        },
+                        () => {
+                            this.allowedToClickAtMenu = true;
+                        }
+                    );
+                }
+            );
         });
 
         this.menuInterface.addCallbackOnTile("okayIcon", () => {
-            //TODO: Create callback for this tile
-            this.allowedToClickAtMenu = false;
             this.soundMaker.playSound(clickSound);
             this.hideSubMenu(this.lastFrame, this.ctx);
+        });
+
+        this.menuInterface.addCallbackOnTile("menuOkayIcon", () => {
+            this.soundMaker.playSound(clickSound);
+            alphaAnimation(
+                "out",
+                this.ctx,
+                ctx => {
+                    this.createBgLayer(this.gameProps.bgLayer);
+                    this.menuInterface.hideBirdSkins(ctx);
+                },
+                ctx => {
+                    alphaAnimation(
+                        "in",
+                        ctx,
+                        ctx => {
+                            this.createBgLayer(this.gameProps.bgLayer);
+                            this.menuInterface.showMenu(ctx);
+                        },
+                        () => {
+                            this.allowedToClickAtMenu = true;
+                        }
+                    );
+                }
+            );
         });
 
         this.menuInterface.addCallbackOnTile("playButton", () => {
             this.soundMaker.playSound(clickSound);
             this.menuInterface.hideMenu(this.ctx);
             this.startGame(this.ctx);
-            this.allowedToClickAtMenu = false;
         });
 
-        this.menuInterface.addCallbackOnTile("pauseIcon", () => {
-            this.pauseGame();
-        });
+        this.menuInterface.addCallbackOnTile("pauseIcon", this.pauseGame);
 
-        this.menuInterface.addCallbackOnTile("playIcon", () => {
-            this.resumeGame();
+        this.menuInterface.addCallbackOnTile("playIcon", this.resumeGame);
+
+        ["yellow", "blue", "gray", "red"].forEach(color => {
+            this.menuInterface.addCallbackOnTile(
+                `bird_${color}Skin`,
+
+                () => {
+                    this.soundMaker.playSound(clickSound);
+                    this.setUpSkin(color);
+
+                    this.showChosenSkin();
+
+                    this.allowedToClickAtMenu = true;
+                }
+            );
+        });
+    };
+
+    showChosenSkin = () => {
+        const birdTile = this.menuInterface.getTile(`bird_${this.skin}Skin`);
+        const x = birdTile.x - 10;
+        const y = birdTile.y - 10;
+        const w = birdTile.width + 20;
+        const h = birdTile.height + 20;
+
+        requestAnimationFrame(() => {
+            this.ctx.clearRect(0, 0, this.cw, this.ch);
+            this.createBgLayer(this.gameProps.bgLayer);
+            this.menuInterface.showBirdSkins(this.ctx);
+            this.menuInterface.showTile("menuOkayIcon");
+
+            this.ctx.strokeStyle = "#fff";
+            this.ctx.lineWidth = 5;
+            this.ctx.lineJoin = "bevel";
+            this.ctx.strokeRect(x, y, w, h);
         });
     };
 
@@ -480,7 +591,7 @@ class Game_Engine {
                     ctx,
                     ctx => {
                         this.createBgLayer(this.gameProps.bgLayer);
-                        this.menuInterface.drawGameMenu(ctx);
+                        this.menuInterface.showMenu(ctx);
                     },
                     () => {
                         this.allowedToClickAtMenu = true;

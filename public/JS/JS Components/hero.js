@@ -16,10 +16,6 @@ export default class Flappy_Bird extends Vector {
         this.allowPlaying = allowPlay;
 
         this.jumpSound = undefined;
-
-        this.keyService = new KeyService();
-
-        this.listenToJump();
     }
 
     initDrawFrame = (entitySprite, ctx) => {
@@ -64,9 +60,6 @@ export default class Flappy_Bird extends Vector {
         }
 
         return false;
-    };
-    listenToJump = () => {
-        this.keyService.addClickListener(this.ctx.canvas, this.jump);
     };
 
     jump = keyState => {

@@ -35,8 +35,28 @@
         "width": 120,
         "height": 140
     },
-    "scoreBoard":{
-        "width":240,
-        "height":120
+    "scoreBoard": {
+        "width": 240,
+        "height": 120
+    },
+    "bird_yellowSkin": {
+        "width": 105,
+        "height": 60
+    },
+    "bird_blueSkin": {
+        "width": 105,
+        "height": 60
+    },
+    "bird_graySkin": {
+        "width": 105,
+        "height": 60
+    },
+    "bird_redSkin": {
+        "width": 105,
+        "height": 60
+    },
+    "menuOkayIcon": {
+        "width": 120,
+        "height": 45
     }
 }

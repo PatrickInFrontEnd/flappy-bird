@@ -3,7 +3,7 @@
         "type": "background",
         "sx": 0,
         "sy": 0,
-        "width": 145,
+        "width": 144,
         "height": 256
     },
     "darkBgLayer": {
@@ -74,6 +74,7 @@
             }
         ]
     },
+
     "bird-blue": {
         "type": "entity",
         "frames": [
@@ -103,6 +104,7 @@
             }
         ]
     },
+
     "bird-gray": {
         "type": "entity",
         "frames": [
@@ -132,6 +134,7 @@
             }
         ]
     },
+
     "bird-red": {
         "type": "entity",
         "frames": [
@@ -239,5 +242,40 @@
         "sy": 152,
         "width": 57,
         "height": 66
+    },
+    "bird_yellowSkin": {
+        "type": "birdSkin",
+        "sx": 0,
+        "sy": 229,
+        "width": 104,
+        "height": 58
+    },
+    "bird_blueSkin": {
+        "type": "birdSkin",
+        "sx": 0,
+        "sy": 81,
+        "width": 97,
+        "height": 60
+    },
+    "bird_graySkin": {
+        "type": "birdSkin",
+        "sx": 0,
+        "sy": 0,
+        "width": 100,
+        "height": 60
+    },
+    "bird_redSkin": {
+        "type": "birdSkin",
+        "sx": 0,
+        "sy": 156,
+        "width": 105,
+        "height": 56
+    },
+    "menuOkayIcon": {
+        "type": "menu",
+        "sx": 462,
+        "sy": 42,
+        "width": 40,
+        "height": 14
     }
 }

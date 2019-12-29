@@ -35,8 +35,8 @@ async function loadAssets() {
         createSound("collided", 0.4, "sounds", ".flac"),
         createSound("gameover", 0.6, "sounds"),
         createSound("jump", 1.0, "sounds"),
-        createSound("pause", 0.8, "sounds"),
-        createSound("play", 0.8, "sounds"),
+        createSound("pause", 1, "sounds"),
+        createSound("play", 1, "sounds"),
         createSound("menuClick", 0.8, "sounds")
     ]);
 
