@@ -9,7 +9,6 @@ class MenuTile extends Vector {
         this.isHidden = true;
         this.isClicked = false;
         this.callback = undefined;
-        this.callbackElement = undefined;
     }
 
     //FIXME: create function that will paint menu tiles from 0 opacity to 1 and from 1 to 0 all tiles together (paint tiles for 0.1 opacity, clearRect etc.)

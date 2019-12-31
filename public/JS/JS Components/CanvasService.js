@@ -6,6 +6,7 @@ import { SoundMaker } from "./soundMaker.js";
 import Game_Menu from "./Interface.js";
 import { alphaAnimation } from "./animations.js";
 import KeyService from "./KeyService.js";
+import Score_Resolver from "./scoreResolver.js";
 
 class Game_Engine {
     constructor(
@@ -46,6 +47,11 @@ class Game_Engine {
             this.listener
         );
 
+        this.scoreResolver = new Score_Resolver(
+            this.spritesData,
+            this.menuInterface.getTile("scoreBoard")
+        );
+
         this.setCallbacksAtTilesOfMenu();
     }
 
@@ -66,7 +72,6 @@ class Game_Engine {
                         this.spritesData.spritesJSON[name].type === "birdSkin"
                 )
             );
-
         this.lastFrame = undefined;
 
         this.gameProps = undefined;
@@ -167,6 +172,11 @@ class Game_Engine {
             this.soundMaker.playSound(collidedSound);
         }
 
+        if (this.birdPassedThePipe()) {
+            this.scoreResolver.addPoints();
+            this.scoreResolver.convertIntoSprite(this.scoreResolver.score);
+        }
+
         if (this.allowPlaying === true) {
             this.allowedToClickAtMenu = true;
             if (this.isGamePaused === true) {
@@ -199,6 +209,7 @@ class Game_Engine {
         this.soundMaker.playSound(this.soundMaker.getSound("pause"));
         requestAnimationFrame(() => {
             this.menuInterface.showTile("scoreBoard");
+            this.scoreResolver.drawScore(this.ctx);
         });
         this.keyService.removeClickListener(this.canvas);
         this.isGamePaused = true;
@@ -228,6 +239,16 @@ class Game_Engine {
         if (this.isPipeOut()) {
             this.pipesArray.shift();
         }
+    };
+
+    birdPassedThePipe = () => {
+        const arrayOfTheTruth = this.pipesArray.map(generator => {
+            return this.scoreResolver.passedPipe(this.bird, generator);
+        });
+
+        const collided = arrayOfTheTruth.some(el => el === true);
+
+        return collided || false;
     };
 
     createBgLayer = bgSprite => {
@@ -260,6 +281,7 @@ class Game_Engine {
     };
 
     play = () => {
+        this.scoreResolver.resetScore();
         this.startDrawing();
         this.keyService.addKeyListener(this.canvas);
         this.keyService.addKeyMapping("Escape", keystate => {
@@ -446,6 +468,7 @@ class Game_Engine {
                             this.menuInterface.showTile("menuOkayIcon");
                         },
                         () => {
+                            this.showChosenSkin();
                             this.allowedToClickAtMenu = true;
                         }
                     );
@@ -501,6 +524,7 @@ class Game_Engine {
                     this.soundMaker.playSound(clickSound);
                     this.setUpSkin(color);
 
+                    this.ctx.clearRect(0, 0, this.cw, this.ch);
                     this.showChosenSkin();
 
                     this.allowedToClickAtMenu = true;
@@ -517,7 +541,6 @@ class Game_Engine {
         const h = birdTile.height + 20;
 
         requestAnimationFrame(() => {
-            this.ctx.clearRect(0, 0, this.cw, this.ch);
             this.createBgLayer(this.gameProps.bgLayer);
             this.menuInterface.showBirdSkins(this.ctx);
             this.menuInterface.showTile("menuOkayIcon");
@@ -562,6 +585,7 @@ class Game_Engine {
                             lastFrame.height
                         );
                         this.menuInterface.showSubMenu(ctx);
+                        this.scoreResolver.drawScore(ctx);
                     },
                     () => {
                         this.allowedToClickAtMenu = true;
@@ -584,6 +608,7 @@ class Game_Engine {
                     lastFrame.height
                 );
                 this.menuInterface.hideSubMenu(ctx);
+                this.scoreResolver.drawScore(ctx);
             },
             ctx => {
                 alphaAnimation(

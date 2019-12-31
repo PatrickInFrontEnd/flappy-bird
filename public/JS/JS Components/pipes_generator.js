@@ -6,6 +6,7 @@ export default class Pipe_Generator {
         this.ch = this.ctx.canvas.height;
         this.cw = this.ctx.canvas.width;
         this.__SPEED = speed;
+        this.pipePassed = false;
         this.generateConstants();
         this.generateParamsOfPipes();
     }
