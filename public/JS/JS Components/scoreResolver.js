@@ -5,10 +5,12 @@ class Score_Resolver extends Vector {
     constructor(spritesData, scoreboardTile) {
         super();
         this.score = 0;
+        this.bestScore = 0;
         this.scoreValue = 100;
         this.spritesGenerator = new SpriteSheet_Generator(spritesData);
         this.scoreboardTile = scoreboardTile;
         this.spriteScore = undefined;
+        this.spriteBestScore = undefined;
 
         this.scoreSpriteCoordinates = {
             x:
@@ -50,6 +52,15 @@ class Score_Resolver extends Vector {
         this.score += value;
     };
 
+    setBestScore = () => {
+        if (this.score > this.bestScore) {
+            this.bestScore = this.score;
+            this.spriteBestScore = this.spriteScore;
+        } else {
+            this.bestScore = this.bestScore;
+        }
+    };
+
     drawScore = ctx => {
         this.convertIntoSprite();
         ctx.drawImage(
@@ -59,6 +70,24 @@ class Score_Resolver extends Vector {
             this.spriteScore.width,
             this.spriteScore.height
         );
+
+        if (this.bestScore && this.spriteBestScore) {
+            ctx.drawImage(
+                this.spriteBestScore,
+                this.scoreSpriteCoordinates.x - this.spriteBestScore.width / 2,
+                this.scoreSpriteCoordinates.y + this.scoreboardTile.height / 3,
+                this.spriteBestScore.width,
+                this.spriteBestScore.height
+            );
+        } else {
+            ctx.drawImage(
+                this.spriteScore,
+                this.scoreSpriteCoordinates.x - this.spriteScore.width / 2,
+                this.scoreSpriteCoordinates.y + this.scoreboardTile.height / 3,
+                this.spriteScore.width,
+                this.spriteScore.height
+            );
+        }
     };
 
     resetScore = () => {
@@ -82,6 +111,19 @@ class Score_Resolver extends Vector {
             const numberOfSprites = sprites.length;
             if (!numberOfSprites) {
                 throw Error("Sprites array doesn't exist.", sprites);
+            }
+
+            if (numberOfSprites >= 7)
+                this.scoreSpriteCoordinates.x =
+                    this.scoreboardTile.x +
+                    this.scoreboardTile.width -
+                    this.scoreboardTile.width / 5 -
+                    this.scoreboardTile.width / 6;
+            else {
+                this.scoreSpriteCoordinates.x =
+                    this.scoreboardTile.x +
+                    this.scoreboardTile.width -
+                    this.scoreboardTile.width / 5;
             }
 
             //NOTE: Creating a buffer for digit sprites
