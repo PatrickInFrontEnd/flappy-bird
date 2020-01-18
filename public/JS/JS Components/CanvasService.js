@@ -545,7 +545,7 @@ class Game_Engine {
             this.menuInterface.showBirdSkins(this.ctx);
             this.menuInterface.showTile("menuOkayIcon");
 
-            this.ctx.strokeStyle = "#fff";
+            this.ctx.strokeStyle = "#f5f5f5";
             this.ctx.lineWidth = 5;
             this.ctx.lineJoin = "bevel";
             this.ctx.strokeRect(x, y, w, h);
