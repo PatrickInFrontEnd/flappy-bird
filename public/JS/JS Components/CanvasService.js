@@ -175,6 +175,7 @@ class Game_Engine {
         if (this.birdPassedThePipe()) {
             this.scoreResolver.addPoints();
             this.scoreResolver.convertIntoSprite(this.scoreResolver.score);
+            this.scoreResolver.setBestScore();
         }
 
         if (this.allowPlaying === true) {
@@ -585,6 +586,7 @@ class Game_Engine {
                             lastFrame.height
                         );
                         this.menuInterface.showSubMenu(ctx);
+                        this.scoreResolver.setBestScore();
                         this.scoreResolver.drawScore(ctx);
                     },
                     () => {
