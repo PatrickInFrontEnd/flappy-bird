@@ -89,6 +89,7 @@ class Game_Engine {
 
         //It's a determinant of when we should create and add new pipe to the game, also helps with animation
         this.countFrame = 0;
+        this.__DISTANCE = 100;
 
         this.spritesGenerator = new SpriteSheet_Generator(this.spritesData);
 
@@ -176,6 +177,19 @@ class Game_Engine {
             this.scoreResolver.addPoints();
             this.scoreResolver.convertIntoSprite(this.scoreResolver.score);
             this.scoreResolver.setBestScore();
+            if (this.scoreResolver.score >= 1000 && this.__SPEED_OF_PIPES < 4)
+                this.increaseSpeedOfPipes();
+            else if (
+                this.scoreResolver.score >= 2000 &&
+                this.__SPEED_OF_PIPES < 5
+            ) {
+                this.increaseSpeedOfPipes();
+            } else if (
+                this.scoreResolver.score >= 5000 &&
+                this.__SPEED_OF_PIPES < 6
+            ) {
+                this.increaseSpeedOfPipes();
+            }
         }
 
         if (this.allowPlaying === true) {
@@ -231,7 +245,7 @@ class Game_Engine {
     };
 
     handlePipes = () => {
-        if (this.countFrame % 100 === 0) {
+        if (this.countFrame % this.__DISTANCE === 0) {
             this.pipesArray.push(
                 new Pipe_Generator(this.ctx, this.__SPEED_OF_PIPES)
             );
@@ -324,6 +338,8 @@ class Game_Engine {
     };
 
     resetStructures = bgSong => {
+        this.__SPEED_OF_PIPES = 3;
+        this.__DISTANCE = 100;
         this.soundMaker.stopSound(bgSong);
         this.bird.y = this.ch / 2;
         this.pipesArray = [];
@@ -349,6 +365,7 @@ class Game_Engine {
 
     increaseSpeedOfPipes = () => {
         this.__SPEED_OF_PIPES++;
+        this.__DISTANCE = 80;
     };
 
     addGameSounds = () => {
@@ -364,7 +381,8 @@ class Game_Engine {
     listener = (element = this.canvas) => {
         try {
             element.addEventListener("mousedown", e => {
-                const { layerX: x, layerY: y, buttons } = e;
+                const { clientX: x, clientY: y, buttons } = e;
+                console.log(e);
 
                 const tiles = this.menuSpriteNames.map(name =>
                     this.menuInterface.menuTiles.get(name)
