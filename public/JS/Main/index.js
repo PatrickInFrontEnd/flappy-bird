@@ -52,5 +52,6 @@ async function loadAssets() {
     ];
 
     app = new Game_Engine(canvas, spritesData, sounds, interfaceJSON);
+    //Dev debugging
     window.app = app;
 }

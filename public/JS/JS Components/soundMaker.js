@@ -19,7 +19,7 @@ class SoundMaker {
     getSound = name => {
         try {
             if (!this.sounds.has(name))
-                throw Error(`Name ${name} is incorrect.`);
+                throw Error(`Name '${name}' is incorrect.`);
             return this.sounds.get(name);
         } catch (error) {
             console.error("Something went wrong with your Sound Maker:", error);

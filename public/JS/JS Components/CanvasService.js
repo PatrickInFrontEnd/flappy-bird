@@ -364,7 +364,11 @@ class Game_Engine {
     listener = (element = this.canvas) => {
         try {
             element.addEventListener("mousedown", e => {
-                const { layerX: x, layerY: y, buttons } = e;
+                const { clientX: xPos, clientY: yPos, buttons } = e;
+                const { top, left } = e.target.getBoundingClientRect();
+
+                const x = xPos - left;
+                const y = yPos - top;
 
                 const tiles = this.menuSpriteNames.map(name =>
                     this.menuInterface.menuTiles.get(name)
