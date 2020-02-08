@@ -1,10 +1,16 @@
 import Game_Engine from "../JS Components/CanvasService.js";
-import { entitySpritesURL, bgSpritesURL } from "../JS Components/constants.js";
-import {
-    getInterfaceData,
-    getSpritesData,
-    createImage
-} from "../JS Components/spritesFunctions.js";
+import entitiesImage from "../../img/entity_sprites.png";
+import spritesImg from "../../img/sprites.png";
+import songMP3 from "../../assets/music/song.mp3";
+import collidedFLAC from "../../assets/gameSounds/collided.flac";
+import gameoverMP3 from "../../assets/gameSounds/gameover.mp3";
+import jumpMP3 from "../../assets/gameSounds/jump.mp3";
+import pauseMP3 from "../../assets/gameSounds/pause.mp3";
+import playMP3 from "../../assets/gameSounds/play.mp3";
+import menuClickMP3 from "../../assets/gameSounds/menuClick.mp3";
+import spritesJSON from "../../JSON/sprites.json";
+import interfaceJSON from "../../JSON/menuCords.json";
+import { createImage } from "../JS Components/spritesFunctions.js";
 import { createSound } from "../JS Components/songFunctions.js";
 import "../../main.css";
 
@@ -18,8 +24,6 @@ async function loadAssets() {
     const [
         bgSpriteImg,
         entitySpriteImg,
-        spritesJSON,
-        interfaceJSON,
         songMusic,
         collidedSound,
         gameOverSound,
@@ -28,17 +32,15 @@ async function loadAssets() {
         playSound,
         menuClickSound
     ] = await Promise.all([
-        createImage(bgSpritesURL),
-        createImage(entitySpritesURL),
-        getSpritesData(),
-        getInterfaceData(),
-        createSound("song", 0.2, "music"),
-        createSound("collided", 0.4, "sounds", ".flac"),
-        createSound("gameover", 0.6, "sounds"),
-        createSound("jump", 1.0, "sounds"),
-        createSound("pause", 1, "sounds"),
-        createSound("play", 1, "sounds"),
-        createSound("menuClick", 0.8, "sounds")
+        createImage(spritesImg),
+        createImage(entitiesImage),
+        createSound(songMP3, 0.2),
+        createSound(collidedFLAC, 0.4),
+        createSound(gameoverMP3, 0.6),
+        createSound(jumpMP3, 1.0),
+        createSound(pauseMP3, 1.0),
+        createSound(playMP3, 1.0),
+        createSound(menuClickMP3, 0.8)
     ]);
 
     const spritesData = { bgSpriteImg, entitySpriteImg, spritesJSON };
