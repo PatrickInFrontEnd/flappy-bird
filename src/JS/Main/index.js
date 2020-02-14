@@ -6,6 +6,7 @@ import {
     createImage
 } from "../JS Components/spritesFunctions.js";
 import { createSound } from "../JS Components/songFunctions.js";
+import "../../main.css";
 
 const d = document;
 const canvas = d.querySelector("#app");
@@ -52,5 +53,6 @@ async function loadAssets() {
     ];
 
     app = new Game_Engine(canvas, spritesData, sounds, interfaceJSON);
+    //Dev debugging
     window.app = app;
 }
