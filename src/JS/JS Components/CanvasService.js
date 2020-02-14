@@ -7,6 +7,7 @@ import Game_Menu from "./Interface.js";
 import { alphaAnimation } from "./animations.js";
 import KeyService from "./KeyService.js";
 import Score_Resolver from "./scoreResolver.js";
+import cursorPNG from "./../../img/cursor.png";
 
 class Game_Engine {
     constructor(
@@ -155,7 +156,7 @@ class Game_Engine {
 
         this.ctx.clearRect(0, 0, this.cw, this.ch);
 
-        //NOTE: pushing pipes in appropriate distances and delete them when behind the canvas
+        //NOTE: pushing pipes in appropriate distances and deleting them when behind the canvas
         this.handlePipes();
         const sprite = this.typeOfBg === "light" ? lightBgLayer : bgLayer;
 
@@ -175,6 +176,12 @@ class Game_Engine {
 
         if (this.birdPassedThePipe()) {
             this.scoreResolver.addPoints();
+            if (
+                this.scoreResolver.score === 2000 ||
+                this.scoreResolver.score === 5000
+            ) {
+                this.increaseSpeedOfPipes();
+            }
             this.scoreResolver.convertIntoSprite(this.scoreResolver.score);
             this.scoreResolver.setBestScore();
             if (this.scoreResolver.score >= 1000 && this.__SPEED_OF_PIPES < 4)
@@ -297,6 +304,7 @@ class Game_Engine {
 
     play = () => {
         this.scoreResolver.resetScore();
+        this.__SPEED_OF_PIPES = 3;
         this.startDrawing();
         this.keyService.addKeyListener(this.canvas);
         this.keyService.addKeyMapping("Escape", keystate => {
@@ -388,7 +396,7 @@ class Game_Engine {
                 const y = yPos - top;
 
                 const tiles = this.menuSpriteNames.map(name =>
-                    this.menuInterface.menuTiles.get(name)
+                    this.menuInterface.getTile(name)
                 );
 
                 tiles.forEach(tile => {
@@ -650,7 +658,7 @@ class Game_Engine {
     };
 
     setCursorIcon = () => {
-        this.canvas.style.cursor = "url(img/cursor.png),auto";
+        this.canvas.style.cursor = `url(${cursorPNG}),auto`;
     };
 }
 
