@@ -64,14 +64,14 @@ async function getInterfaceData() {
         });
 }
 
-async function createImage(filename) {
+async function createImage(src) {
     const image = new Image();
 
     return new Promise(res => {
         image.addEventListener("load", () => {
             res(image);
         });
-        image.src = filename;
+        image.src = src;
     });
 }
 
