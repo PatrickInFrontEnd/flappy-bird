@@ -8,11 +8,6 @@ function createAnimation(spriteFrames, framesLength, counter) {
     return frame;
 }
 
-function linearAnimation() {
-    //TODO
-    //Higher order function frame-index, frameX > destination point ? x-- : x++; etc.
-}
-
 function alphaAnimation(type, ctx, drawCallback, optionalCallback, iterator) {
     let i = iterator;
     if (type === "in") {

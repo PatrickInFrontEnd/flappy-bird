@@ -4,7 +4,7 @@
     "description": "Flappy bird Canvas game",
     "main": "index.js",
     "scripts": {
-        "start": "webpack-dev-server --config webpack.dev.js --open",
+        "start": "webpack-dev-server --config webpack.dev.js",
         "build": "webpack --config webpack.prod.js"
     },
     "repository": {
@@ -44,5 +44,10 @@
         "webpack-cli": "^3.3.10",
         "webpack-dev-server": "^3.9.0",
         "webpack-merge": "^4.2.2"
+    },
+    "dependencies": {
+        "browser-sync": "^2.26.7",
+        "browser-sync-webpack-plugin": "^2.2.2",
+        "gsap": "^3.1.1"
     }
 }

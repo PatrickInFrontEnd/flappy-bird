@@ -8,6 +8,7 @@ import { alphaAnimation } from "./animations.js";
 import KeyService from "./KeyService.js";
 import Score_Resolver from "./scoreResolver.js";
 import cursorPNG from "./../../img/cursor.png";
+import { handleErrorAnimation } from "./../Main/utils/animations";
 
 class Game_Engine {
     constructor(
@@ -26,17 +27,17 @@ class Game_Engine {
         this.spritesData = {
             bgSpriteImg,
             entitySpriteImg,
-            spritesJSON
+            spritesJSON,
         };
 
         this.keyService = new KeyService();
         this.sounds = sounds.map(([name, sound]) => ({ name, sound }));
-        //TODO: figure out how to simplify this API
 
         this.generateGameEngineParams();
         this.addGameSounds();
         this.setCursorIcon();
         this.createGameProps();
+        this.handleResize();
 
         this.allowedToClickAtMenu = true;
 
@@ -60,16 +61,18 @@ class Game_Engine {
         this.bgSpriteNames = Array.from(
             Object.keys(this.spritesData.spritesJSON)
         ).filter(
-            name => this.spritesData.spritesJSON[name].type === "background"
+            (name) => this.spritesData.spritesJSON[name].type === "background"
         );
 
         this.menuSpriteNames = Array.from(
             Object.keys(this.spritesData.spritesJSON)
         )
-            .filter(name => this.spritesData.spritesJSON[name].type === "menu")
+            .filter(
+                (name) => this.spritesData.spritesJSON[name].type === "menu"
+            )
             .concat(
                 Array.from(Object.keys(this.spritesData.spritesJSON)).filter(
-                    name =>
+                    (name) =>
                         this.spritesData.spritesJSON[name].type === "birdSkin"
                 )
             );
@@ -118,7 +121,7 @@ class Game_Engine {
             upperPipeColumn,
             upperPipeSlot,
             bottomPipeColumn,
-            bottomPipeSlot
+            bottomPipeSlot,
         ] = this.spritesGenerator.getAllSprites(...this.bgSpriteNames);
 
         if (!this.gameProps) {
@@ -130,7 +133,7 @@ class Game_Engine {
                 bottomPipeColumn,
                 bottomPipeSlot,
                 entity: this.entitySprite,
-                sounds: { jumpSound, collidedSound, bgSong }
+                sounds: { jumpSound, collidedSound, bgSong },
             };
 
             this.gameProps = props;
@@ -146,9 +149,9 @@ class Game_Engine {
         bottomPipeColumn,
         bottomPipeSlot,
         entity,
-        sounds: { jumpSound, collidedSound, bgSong }
+        sounds: { jumpSound, collidedSound, bgSong },
     }) => {
-        const [pauseIcon, playIcon] = ["pauseIcon", "playIcon"].map(name =>
+        const [pauseIcon, playIcon] = ["pauseIcon", "playIcon"].map((name) =>
             this.menuInterface.getTile(name)
         );
         this.countFrame++;
@@ -165,7 +168,7 @@ class Game_Engine {
 
         this.drawPipes({
             upperPipeSprite: { upperPipeColumn, upperPipeSlot },
-            bottomPipeSprite: { bottomPipeColumn, bottomPipeSlot }
+            bottomPipeSprite: { bottomPipeColumn, bottomPipeSlot },
         });
 
         if (this.birdCollided(this.pipesArray) || this.bird.checkPosition()) {
@@ -216,7 +219,7 @@ class Game_Engine {
                         bottomPipeColumn,
                         bottomPipeSlot,
                         entity,
-                        sounds: { jumpSound, collidedSound, bgSong }
+                        sounds: { jumpSound, collidedSound, bgSong },
                     });
                 });
             }
@@ -264,16 +267,16 @@ class Game_Engine {
     };
 
     birdPassedThePipe = () => {
-        const arrayOfTheTruth = this.pipesArray.map(generator => {
+        const arrayOfTheTruth = this.pipesArray.map((generator) => {
             return this.scoreResolver.passedPipe(this.bird, generator);
         });
 
-        const collided = arrayOfTheTruth.some(el => el === true);
+        const collided = arrayOfTheTruth.some((el) => el === true);
 
         return collided || false;
     };
 
-    createBgLayer = bgSprite => {
+    createBgLayer = (bgSprite) => {
         const buffer = bgSprite;
 
         const times = parseInt(this.cw / buffer.width);
@@ -294,7 +297,7 @@ class Game_Engine {
     };
 
     drawPipes = ({ upperPipeSprite, bottomPipeSprite }) => {
-        this.pipesArray.forEach(pipeGenerator => {
+        this.pipesArray.forEach((pipeGenerator) => {
             pipeGenerator.updatePipes(
                 { upperPipeSprite, bottomPipeSprite },
                 this.__SPEED_OF_PIPES
@@ -307,7 +310,7 @@ class Game_Engine {
         this.__SPEED_OF_PIPES = 3;
         this.startDrawing();
         this.keyService.addKeyListener(this.canvas);
-        this.keyService.addKeyMapping("Escape", keystate => {
+        this.keyService.addKeyMapping("Escape", (keystate) => {
             if (this.isGamePaused === true && keystate) {
                 this.resumeGame();
             } else if (this.isGamePaused === false && keystate) {
@@ -321,19 +324,19 @@ class Game_Engine {
 
     isPipeOut = () => {
         return this.pipesArray.some(
-            pipeGenerator =>
+            (pipeGenerator) =>
                 pipeGenerator.upperPipe.x + pipeGenerator.upperPipe.w + 10 <= 0
         );
     };
 
-    banPainting = bgSong => {
+    banPainting = (bgSong) => {
         this.allowPlaying = false;
         this.keyService.removeKeyListener(this.canvas);
         this.lastFrame = createBuffer(this.canvas, {
             sx: 0,
             sy: 0,
             width: this.cw,
-            height: this.ch
+            height: this.ch,
         });
         setTimeout(() => {
             this.showSubMenu(this.lastFrame, this.ctx, bgSong);
@@ -345,7 +348,7 @@ class Game_Engine {
         this.bird.startPlaying();
     };
 
-    resetStructures = bgSong => {
+    resetStructures = (bgSong) => {
         this.__SPEED_OF_PIPES = 3;
         this.__DISTANCE = 100;
         this.soundMaker.stopSound(bgSong);
@@ -355,16 +358,16 @@ class Game_Engine {
     };
 
     birdCollided = ([...pipesGenerators]) => {
-        const arrayOfTheTruth = pipesGenerators.map(generator => {
+        const arrayOfTheTruth = pipesGenerators.map((generator) => {
             return this.bird.collided(generator);
         });
 
-        const collided = arrayOfTheTruth.some(el => el === true);
+        const collided = arrayOfTheTruth.some((el) => el === true);
 
         return collided || false;
     };
 
-    setUpSkin = name => {
+    setUpSkin = (name) => {
         if (name) this.skin = name;
         this.skinOfBird = "bird-" + this.skin;
         this.entitySprite = this.spritesGenerator.getSprite(this.skinOfBird);
@@ -388,18 +391,18 @@ class Game_Engine {
 
     listener = (element = this.canvas) => {
         try {
-            element.addEventListener("mousedown", e => {
+            element.addEventListener("mousedown", (e) => {
                 const { clientX: xPos, clientY: yPos, buttons } = e;
                 const { top, left } = e.target.getBoundingClientRect();
 
                 const x = xPos - left;
                 const y = yPos - top;
 
-                const tiles = this.menuSpriteNames.map(name =>
+                const tiles = this.menuSpriteNames.map((name) =>
                     this.menuInterface.getTile(name)
                 );
 
-                tiles.forEach(tile => {
+                tiles.forEach((tile) => {
                     if (
                         x >= tile.x &&
                         x <= tile.x + tile.width &&
@@ -425,23 +428,23 @@ class Game_Engine {
         }
     };
 
-    startGame = ctx => {
+    startGame = (ctx) => {
         alphaAnimation(
             "in",
             ctx,
-            ctx => {
+            (ctx) => {
                 this.menuInterface.showReadyTitle(ctx);
             },
-            ctx => {
+            (ctx) => {
                 alphaAnimation(
                     "out",
                     ctx,
                     this.menuInterface.hideReadyTitle,
-                    ctx => {
+                    (ctx) => {
                         alphaAnimation(
                             "in",
                             ctx,
-                            ctx => {
+                            (ctx) => {
                                 const sprite =
                                     this.typeOfBg === "light"
                                         ? this.gameProps.lightBgLayer
@@ -484,15 +487,15 @@ class Game_Engine {
             alphaAnimation(
                 "out",
                 this.ctx,
-                ctx => {
+                (ctx) => {
                     this.createBgLayer(this.gameProps.bgLayer);
                     this.menuInterface.hideMenu(ctx);
                 },
-                ctx => {
+                (ctx) => {
                     alphaAnimation(
                         "in",
                         ctx,
-                        ctx => {
+                        (ctx) => {
                             this.createBgLayer(this.gameProps.bgLayer);
                             this.menuInterface.showBirdSkins(ctx);
                             this.menuInterface.showTile("menuOkayIcon");
@@ -516,15 +519,15 @@ class Game_Engine {
             alphaAnimation(
                 "out",
                 this.ctx,
-                ctx => {
+                (ctx) => {
                     this.createBgLayer(this.gameProps.bgLayer);
                     this.menuInterface.hideBirdSkins(ctx);
                 },
-                ctx => {
+                (ctx) => {
                     alphaAnimation(
                         "in",
                         ctx,
-                        ctx => {
+                        (ctx) => {
                             this.createBgLayer(this.gameProps.bgLayer);
                             this.menuInterface.showMenu(ctx);
                         },
@@ -546,7 +549,7 @@ class Game_Engine {
 
         this.menuInterface.addCallbackOnTile("playIcon", this.resumeGame);
 
-        ["yellow", "blue", "gray", "red"].forEach(color => {
+        ["yellow", "blue", "gray", "red"].forEach((color) => {
             this.menuInterface.addCallbackOnTile(
                 `bird_${color}Skin`,
 
@@ -593,7 +596,7 @@ class Game_Engine {
         alphaAnimation(
             "out",
             ctx,
-            ctx => {
+            (ctx) => {
                 ctx.drawImage(
                     lastFrame,
                     0,
@@ -602,11 +605,11 @@ class Game_Engine {
                     lastFrame.height
                 );
             },
-            ctx => {
+            (ctx) => {
                 alphaAnimation(
                     "in",
                     ctx,
-                    ctx => {
+                    (ctx) => {
                         ctx.drawImage(
                             lastFrame,
                             0,
@@ -630,7 +633,7 @@ class Game_Engine {
         alphaAnimation(
             "out",
             ctx,
-            ctx => {
+            (ctx) => {
                 ctx.drawImage(
                     lastFrame,
                     0,
@@ -641,11 +644,11 @@ class Game_Engine {
                 this.menuInterface.hideSubMenu(ctx);
                 this.scoreResolver.drawScore(ctx);
             },
-            ctx => {
+            (ctx) => {
                 alphaAnimation(
                     "in",
                     ctx,
-                    ctx => {
+                    (ctx) => {
                         this.createBgLayer(this.gameProps.bgLayer);
                         this.menuInterface.showMenu(ctx);
                     },
@@ -660,6 +663,51 @@ class Game_Engine {
     setCursorIcon = () => {
         this.canvas.style.cursor = `url(${cursorPNG}),auto`;
     };
+
+    handleResize = () => {
+        const appContainer = document.querySelector("#appContainer");
+        let viewRefreshed = false;
+
+        const p = createErrorElement();
+
+        if (window.innerWidth <= 1020) {
+            this.canvas.style.display = "none";
+            appContainer.appendChild(p);
+            handleErrorAnimation();
+        } else {
+            viewRefreshed = true;
+        }
+
+        window.addEventListener("resize", (e) => {
+            const { innerWidth: width } = e.target;
+            const pElement = document.querySelector("#widthError");
+            const errorExists = !!pElement;
+
+            if (width <= 1020) {
+                this.canvas.style.display = "none";
+                appContainer.appendChild(p);
+                if (viewRefreshed) {
+                    handleErrorAnimation(true);
+                    viewRefreshed = false;
+                }
+            } else if (errorExists) {
+                appContainer.removeChild(pElement);
+                this.canvas.style.display = "block";
+                viewRefreshed = true;
+            }
+        });
+    };
+}
+
+function createErrorElement() {
+    const p = document.createElement("p");
+    const pMessage =
+        "Sorry, your resolution is too low. Minimal width resolution that is required equals 1020px.";
+
+    p.textContent = pMessage;
+    p.id = "widthError";
+
+    return p;
 }
 
 export default Game_Engine;
