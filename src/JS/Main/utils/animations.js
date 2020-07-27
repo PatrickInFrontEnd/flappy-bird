@@ -1,7 +1,7 @@
-import { TimelineMax } from "gsap";
+import gsap from "gsap";
 
 const d = document;
-const tl = new TimelineMax();
+const tl = gsap.timeline();
 
 function headerAnimation() {
     const headerLogo = d.querySelector(".header__logo");
@@ -39,7 +39,7 @@ export const handleErrorAnimation = (freshAnimation = false) => {
             }
         );
     } else {
-        const tl = new TimelineMax();
+        const tl = gsap.timeline();
         tl.fromTo(
             errorWidthElement,
             {
