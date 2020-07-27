@@ -196,3 +196,7 @@ body {
         margin: 80px auto 0;
     }
 }
+
+a.profileLink {
+    border-bottom: 1px solid #fff;
+}
