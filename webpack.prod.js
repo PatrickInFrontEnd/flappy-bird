@@ -55,7 +55,7 @@ module.exports = merge(commonConfig, {
         minimizer: [
             new JsOptimizer(),
             new HtmlPlugin({
-                filename: "index.production.html",
+                filename: "index.html",
                 template: "./src/index.html",
                 minify: {
                     collapseWhitespace: true,
