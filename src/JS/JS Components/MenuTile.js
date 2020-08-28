@@ -11,8 +11,7 @@ class MenuTile extends Vector {
         this.callback = undefined;
     }
 
-    //FIXME: create function that will paint menu tiles from 0 opacity to 1 and from 1 to 0 all tiles together (paint tiles for 0.1 opacity, clearRect etc.)
-    drawTile = ctx => {
+    drawTile = (ctx) => {
         if (!this.isHidden) {
             ctx.drawImage(
                 this.image,
@@ -28,7 +27,7 @@ class MenuTile extends Vector {
         }
     };
 
-    animateHiddenTile = ctx => {
+    animateHiddenTile = (ctx) => {
         ctx.drawImage(
             this.image,
             0,
@@ -42,12 +41,11 @@ class MenuTile extends Vector {
         );
     };
 
-    //FIXME: logs 0 infinetely and 100 9 times at showTile
-    hideTile = ctx => {
+    hideTile = (ctx) => {
         this.banClick();
         this.animateHiddenTile(ctx);
     };
-    showTile = ctx => {
+    showTile = (ctx) => {
         this.allowClick();
         this.drawTile(ctx);
     };
@@ -63,7 +61,7 @@ class MenuTile extends Vector {
         super.setupCoordinates(x, y);
     };
 
-    addCallback = callback => {
+    addCallback = (callback) => {
         this.callback = callback;
     };
 }
