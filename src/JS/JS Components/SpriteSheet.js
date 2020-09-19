@@ -6,7 +6,7 @@ class SpriteSheet_Generator {
 
         this.images = {
             entity: entitySpriteImg,
-            background: bgSpriteImg
+            background: bgSpriteImg,
         };
         this.spriteJSON = spritesJSON;
     }
@@ -19,23 +19,24 @@ class SpriteSheet_Generator {
     };
 
     addSprites = (typeOfSprite, ...names) => {
-        names.forEach(name => this.addSprite(name, typeOfSprite));
+        names.forEach((name) => this.addSprite(name, typeOfSprite));
     };
 
-    getSprite = name => {
+    getSprite = (name) => {
         try {
             if (!this.spritesSheet.has(name)) {
-                throw Error("Incorrect name typed: " + name);
+                throw new Error("Incorrect name typed: " + name);
             }
 
             return this.spritesSheet.get(name);
         } catch (err) {
             console.error("Something went wrong. ", err);
+            throw err;
         }
     };
 
     getAllSprites = (...names) => {
-        const sprites = names.map(name => {
+        const sprites = names.map((name) => {
             return this.getSprite(name);
         });
 

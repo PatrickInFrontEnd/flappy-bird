@@ -55,7 +55,12 @@ function alphaAnimation(type, ctx, drawCallback, optionalCallback, iterator) {
 }
 
 function formatToAlpha(val) {
+    if (val === 0) return "0";
+
+    if (!val || val < 0 || typeof val !== "number") return null;
+
     let value;
+    val = parseInt(val);
     if (val < 10) value = `0.0${val}`;
     else if (val >= 10 && val < 100) value = `0.${val}`;
     else value = `1`;
@@ -63,4 +68,4 @@ function formatToAlpha(val) {
     return value;
 }
 
-export { createAnimation, alphaAnimation };
+export { createAnimation, alphaAnimation, formatToAlpha };
