@@ -19,7 +19,7 @@ class Score_Resolver extends Vector {
                 this.scoreboardTile.width / 5,
             y: this.scoreboardTile.y + this.scoreboardTile.height / 3,
             width: 12,
-            height: 14
+            height: 14,
         };
 
         this.digits = [];
@@ -61,7 +61,7 @@ class Score_Resolver extends Vector {
         }
     };
 
-    drawScore = ctx => {
+    drawScore = (ctx) => {
         this.convertIntoSprite();
         ctx.drawImage(
             this.spriteScore,
@@ -98,7 +98,7 @@ class Score_Resolver extends Vector {
         if (typeof score === "number") score = `${score}`;
         const spritesArr = score
             .split("")
-            .map(digit => this.spritesGenerator.getSprite(digit));
+            .map((digit) => this.spritesGenerator.getSprite(digit));
         const sprite = this.joinSprites(spritesArr);
 
         this.spriteScore = sprite;
@@ -106,7 +106,7 @@ class Score_Resolver extends Vector {
         return sprite;
     };
 
-    joinSprites = sprites => {
+    joinSprites = (sprites) => {
         try {
             const numberOfSprites = sprites.length;
             if (!numberOfSprites) {
@@ -126,7 +126,6 @@ class Score_Resolver extends Vector {
                     this.scoreboardTile.width / 5;
             }
 
-            //NOTE: Creating a buffer for digit sprites
             const buffer = document.createElement("canvas");
 
             buffer.width = this.scoreSpriteCoordinates.width * numberOfSprites;

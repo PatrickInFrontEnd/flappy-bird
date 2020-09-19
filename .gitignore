@@ -1,2 +1,5 @@
 node_modules/
 dist/
+*.code-workspace
+# Local Netlify folder
+.netlify

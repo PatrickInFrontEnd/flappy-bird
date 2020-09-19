@@ -10,11 +10,11 @@ function createSprite(nameOfSprite, spritesImage, spritesJSON) {
         if (!bufferData) throw Error("Wrong name of sprite: " + nameOfSprite);
 
         if (!bufferData.frames) {
-            const buffer = createBuffer(image, bufferData); //NOTE:(img , sx,sy,sw,sh , dx,dy,dw,dh )
+            const buffer = createBuffer(image, bufferData);
 
             return buffer;
         } else {
-            const frames = bufferData.frames.map(coordinates =>
+            const frames = bufferData.frames.map((coordinates) =>
                 createBuffer(image, coordinates)
             );
             return frames;
@@ -40,12 +40,12 @@ async function getSpritesData() {
     const URL = "./img/sprites.json";
 
     return fetch(URL)
-        .then(res => {
+        .then((res) => {
             if (!res.ok)
                 throw Error(`Response from ${URL} failed, ${res.statusText}`);
             return res.json();
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(`Something went wrong. `, err);
         });
 }
@@ -54,12 +54,12 @@ async function getInterfaceData() {
     const URL = "./img/menuCords.json";
 
     return fetch(URL)
-        .then(res => {
+        .then((res) => {
             if (!res.ok)
                 throw Error(`Response from ${URL} failed, ${res.statusText}`);
             return res.json();
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(`Something went wrong. `, err);
         });
 }
@@ -67,7 +67,7 @@ async function getInterfaceData() {
 async function createImage(src) {
     const image = new Image();
 
-    return new Promise(res => {
+    return new Promise((res) => {
         image.addEventListener("load", () => {
             res(image);
         });
@@ -75,4 +75,10 @@ async function createImage(src) {
     });
 }
 
-export { createImage,createBuffer, createSprite, getInterfaceData, getSpritesData };
+export {
+    createImage,
+    createBuffer,
+    createSprite,
+    getInterfaceData,
+    getSpritesData,
+};

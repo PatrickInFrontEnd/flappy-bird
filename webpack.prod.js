@@ -12,24 +12,24 @@ module.exports = merge(commonConfig, {
     mode: "production",
     output: {
         filename: "[name].[contentHash].js",
-        path: path.join(__dirname, "/dist")
+        path: path.resolve(__dirname, "dist"),
     },
     module: {
         rules: [
             {
                 test: /\.html$/,
                 exclude: /node_modules/,
-                loader: "html-loader"
+                loader: "html-loader",
             },
             {
                 test: /\.(sa|sc)ss$/,
                 exclude: /node_modules/,
-                use: [miniCSSExtractPlugin.loader, "css-loader", "sass-loader"]
+                use: [miniCSSExtractPlugin.loader, "css-loader", "sass-loader"],
             },
             {
                 test: /\.css$/,
                 exclude: /node_modules/,
-                use: [miniCSSExtractPlugin.loader, "css-loader"]
+                use: [miniCSSExtractPlugin.loader, "css-loader"],
             },
             {
                 test: /\.(jpe?g|gif|png|svg)$/i,
@@ -37,8 +37,8 @@ module.exports = merge(commonConfig, {
                 options: {
                     outputPath: "images",
                     name: "[name].[hash].[ext]",
-                    esModule: false
-                }
+                    esModule: false,
+                },
             },
             {
                 test: /\.(mp3|mp4|flac)$/,
@@ -46,32 +46,32 @@ module.exports = merge(commonConfig, {
                 options: {
                     outputPath: "gameSounds",
                     name: "[name].[hash].[ext]",
-                    esModule: false
-                }
-            }
-        ]
+                    esModule: false,
+                },
+            },
+        ],
     },
     optimization: {
         minimizer: [
             new JsOptimizer(),
             new HtmlPlugin({
-                filename: "index.production.html",
+                filename: "index.html",
                 template: "./src/index.html",
                 minify: {
                     collapseWhitespace: true,
-                    removeComments: true
-                }
+                    removeComments: true,
+                },
             }),
-            new optimizeCSSAssetsPlugin()
-        ]
+            new optimizeCSSAssetsPlugin(),
+        ],
     },
     plugins: [
         new miniCSSExtractPlugin({
-            filename: "[name].[contentHash].css"
+            filename: "[name].[contentHash].css",
         }),
         new CleanWebpackPlugin(),
         new imageMinPlugin({
-            test: /\.(jpe?g|gif|png|svg)$/i
-        })
-    ]
+            test: /\.(jpe?g|gif|png|svg)$/i,
+        }),
+    ],
 });

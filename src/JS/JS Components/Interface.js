@@ -8,8 +8,7 @@ class Game_Menu {
         { bgSpriteImg, entitySpriteImg, spritesJSON },
         interfaceData,
         { bgMethod, sprite },
-        listener,
-        birdSkins
+        listener
     ) {
         this.ctx = ctx;
         this.canvas = this.ctx.canvas;
@@ -22,17 +21,17 @@ class Game_Menu {
         this.spritesGenerator = new SpriteSheet_Generator({
             bgSpriteImg,
             entitySpriteImg,
-            spritesJSON
+            spritesJSON,
         });
 
         this.bgLayer = { bgMethod, sprite };
 
         this.menuTileNames = Array.from(Object.keys(spritesJSON)).filter(
-            name => spritesJSON[name].type === "menu"
+            (name) => spritesJSON[name].type === "menu"
         );
 
         this.birdSkins = Array.from(Object.keys(spritesJSON)).filter(
-            name => spritesJSON[name].type === "birdSkin"
+            (name) => spritesJSON[name].type === "birdSkin"
         );
 
         this.menuTiles = new Map();
@@ -56,14 +55,14 @@ class Game_Menu {
             gameOverTitle,
             flappyBirdTitle,
             tapBoardIcon,
-            menuOkayIcon
+            menuOkayIcon,
         ] = this.spritesGenerator.getAllSprites(...this.menuTileNames);
 
         const [
             bird_yellowSkin,
             bird_blueSkin,
             bird_graySkin,
-            bird_redSkin
+            bird_redSkin,
         ] = this.spritesGenerator.getAllSprites(...this.birdSkins);
 
         const sprites = {
@@ -81,16 +80,16 @@ class Game_Menu {
             bird_yellowSkin,
             bird_blueSkin,
             bird_graySkin,
-            bird_redSkin
+            bird_redSkin,
         };
 
-        this.menuTileNames.forEach(spriteName => {
+        this.menuTileNames.forEach((spriteName) => {
             const { width, height } = this.interfaceData[spriteName];
 
             this.addTile(sprites[spriteName], spriteName, width, height);
             this.menuTiles.get(spriteName).setupCoordinates(0, 0);
         });
-        this.birdSkins.forEach(spriteName => {
+        this.birdSkins.forEach((spriteName) => {
             const { width, height } = this.interfaceData[spriteName];
 
             this.addTile(sprites[spriteName], spriteName, width, height);
@@ -100,7 +99,7 @@ class Game_Menu {
         this.setPositionsOfMenuTiles(this.interfaceData);
     };
 
-    setPositionsOfMenuTiles = spritesData => {
+    setPositionsOfMenuTiles = (spritesData) => {
         const [
             scoreBoard,
             menuIcon,
@@ -112,15 +111,15 @@ class Game_Menu {
             gameOverTitle,
             flappyBirdTitle,
             tapBoardIcon,
-            menuOkayIcon
-        ] = this.menuTileNames.map(name => this.menuTiles.get(name));
+            menuOkayIcon,
+        ] = this.menuTileNames.map((name) => this.menuTiles.get(name));
 
         const [
             bird_yellowSkin,
             bird_blueSkin,
             bird_graySkin,
-            bird_redSkin
-        ] = this.birdSkins.map(name => this.menuTiles.get(name));
+            bird_redSkin,
+        ] = this.birdSkins.map((name) => this.menuTiles.get(name));
 
         //NOTE: Setting up x and y coordinates to draw it at ctx
         const halfW = this.cw / 2;
@@ -132,22 +131,22 @@ class Game_Menu {
             [
                 playButton,
                 halfW - playButton.width / 2,
-                halfH - playButton.height / 2
+                halfH - playButton.height / 2,
             ],
             [
                 menuIcon,
                 halfW - menuIcon.width / 2,
-                halfH + playButton.height + 50
+                halfH + playButton.height + 50,
             ],
             [
                 okayIcon,
                 halfW - okayIcon.width / 2,
-                halfH + playButton.height + 50
+                halfH + playButton.height + 50,
             ],
             [
                 menuOkayIcon,
                 halfW - menuOkayIcon.width / 2,
-                halfH + playButton.height + 50
+                halfH + playButton.height + 50,
             ],
             [getReadyTitle, halfW - getReadyTitle.width / 2, 100],
             [gameOverTitle, halfW - gameOverTitle.width / 2, 100],
@@ -155,13 +154,13 @@ class Game_Menu {
             [
                 tapBoardIcon,
                 halfW - tapBoardIcon.width / 2,
-                halfH - tapBoardIcon.width / 2
+                halfH - tapBoardIcon.width / 2,
             ],
             [scoreBoard, 0, 0],
             [bird_yellowSkin, 85 + bird_yellowSkin.width * 1, 100],
             [bird_blueSkin, 155 + bird_blueSkin.width * 2, 100],
             [bird_graySkin, 205 + bird_graySkin.width * 3, 100],
-            [bird_redSkin, 255 + bird_redSkin.width * 4, 100]
+            [bird_redSkin, 255 + bird_redSkin.width * 4, 100],
         ];
         setup.forEach(([tile, x, y]) => tile.setupCoordinates(x, y));
     };
@@ -170,9 +169,8 @@ class Game_Menu {
         this.menuTiles.set(name, new MenuTile(sprite, w, h));
     };
 
-    drawGameMenu = ctx => {
-        //TODO: create callbacks and setup behaviour when clicked on canvas
-        ["menuIcon", "playButton", "flappyBirdTitle"].forEach(name => {
+    drawGameMenu = (ctx) => {
+        ["menuIcon", "playButton", "flappyBirdTitle"].forEach((name) => {
             const tile = this.menuTiles.get(name);
             tile.showTile(ctx);
         });
@@ -186,7 +184,7 @@ class Game_Menu {
         alphaAnimation(
             "in",
             ctx,
-            ctx => {
+            (ctx) => {
                 bgMethod(sprite);
                 this.drawGameMenu(ctx);
             },
@@ -199,12 +197,12 @@ class Game_Menu {
         );
     };
 
-    showMenu = ctx => {
+    showMenu = (ctx) => {
         this.drawGameMenu(ctx);
     };
 
-    hideMenu = ctx => {
-        ["menuIcon", "playButton", "flappyBirdTitle"].forEach(name => {
+    hideMenu = (ctx) => {
+        ["menuIcon", "playButton", "flappyBirdTitle"].forEach((name) => {
             this.hideTile(name, ctx);
         });
     };
@@ -224,54 +222,53 @@ class Game_Menu {
         tile.hideTile(ctx);
     };
 
-    getTile = name => this.menuTiles.get(name);
-    // showSubMenu = (lastFrame, ctx) => {};
+    getTile = (name) => this.menuTiles.get(name);
 
-    showSubMenu = ctx => {
+    showSubMenu = (ctx) => {
         ["gameOverTitle", "playButton", "okayIcon", "scoreBoard"].forEach(
-            name => {
+            (name) => {
                 this.showTile(name);
             }
         );
     };
 
-    hideSubMenu = ctx => {
+    hideSubMenu = (ctx) => {
         ["gameOverTitle", "playButton", "okayIcon", "scoreBoard"].forEach(
-            name => {
+            (name) => {
                 this.hideTile(name, ctx);
             }
         );
     };
 
-    showReadyTitle = ctx => {
+    showReadyTitle = (ctx) => {
         if (ctx) {
             this.showTile("getReadyTitle", ctx);
         }
         this.showTile("getReadyTitle");
     };
 
-    hideReadyTitle = ctx => {
+    hideReadyTitle = (ctx) => {
         if (ctx) {
             this.hideTile("getReadyTitle", ctx);
         }
         this.hideTile("getReadyTitle");
     };
 
-    showBirdSkins = ctx => {
+    showBirdSkins = (ctx) => {
         [
             "bird_yellowSkin",
             "bird_blueSkin",
             "bird_graySkin",
-            "bird_redSkin"
-        ].forEach(name => this.showTile(name, ctx));
+            "bird_redSkin",
+        ].forEach((name) => this.showTile(name, ctx));
     };
-    hideBirdSkins = ctx => {
+    hideBirdSkins = (ctx) => {
         [
             "bird_yellowSkin",
             "bird_blueSkin",
             "bird_graySkin",
-            "bird_redSkin"
-        ].forEach(name => this.hideTile(name, ctx));
+            "bird_redSkin",
+        ].forEach((name) => this.hideTile(name, ctx));
     };
 }
 

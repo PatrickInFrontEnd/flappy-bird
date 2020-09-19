@@ -107,6 +107,7 @@ body {
 #app {
     margin: 80px auto 50px;
     background-color: #000;
+    border: 1px solid #000;
     outline: none;
 }
 .footer {
@@ -149,6 +150,16 @@ body {
     margin: 10px 0;
 }
 
+@media screen and (max-width: 900px) {
+    .footer {
+        padding: 0 20px;
+    }
+
+    .footer p {
+        font-size: 0.8em;
+    }
+}
+
 .footer a {
     color: #f5f5f5;
     font-size: 20px;
@@ -175,9 +186,14 @@ body {
 }
 
 #widthError {
-    padding: 0px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
     margin: 20px auto;
+    padding: 5px 10px;
     color: #f00;
+    background-color: #000;
     text-align: justify;
     font-size: 18px;
     text-align-last: center;
@@ -189,4 +205,8 @@ body {
     #widthError {
         margin: 80px auto 0;
     }
+}
+
+a.profileLink {
+    border-bottom: 1px solid #fff;
 }
