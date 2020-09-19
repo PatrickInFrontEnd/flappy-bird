@@ -36,6 +36,8 @@ class Score_Resolver extends Vector {
     };
 
     passedPipe = (entity, pipeGenerator) => {
+        if (!entity || !pipeGenerator) return false;
+
         if (
             entity.x >=
                 pipeGenerator.bottomPipe.x + pipeGenerator.bottomPipe.w / 2 &&
@@ -49,6 +51,7 @@ class Score_Resolver extends Vector {
     };
 
     addPoints = (value = this.scoreValue) => {
+        if (typeof value !== "number") return;
         this.score += value;
     };
 
