@@ -36,12 +36,15 @@ export default class Flappy_Bird extends Vector {
         this.draw(entitySprites, frameCounter);
     };
 
-    playSound = sound => {
+    playSound = (sound) => {
         sound.currentTime = 0;
         sound.play();
     };
 
     updateRadiusCoordinates = (x, y) => {
+        if (typeof x !== "number" || typeof y !== "number") {
+            throw Error("Coordinates have to be type of number!");
+        }
         this.radius.x = x + this.width / 2;
         this.radius.y = y + this.height / 2;
     };
@@ -62,7 +65,7 @@ export default class Flappy_Bird extends Vector {
         return false;
     };
 
-    jump = keyState => {
+    jump = (keyState) => {
         if (keyState && this.allowPlaying === true) {
             this.velocity = 0;
             this.velocity += this.upForce;
