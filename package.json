@@ -10,7 +10,9 @@
     "scripts": {
         "devStart": "webpack-dev-server --config webpack.dev.js",
         "start": "node server.js",
-        "build": "webpack --config webpack.prod.js"
+        "build": "webpack --config webpack.prod.js",
+        "init-jest": "jest --init",
+        "test": "jest --colors  --verbose --watchAll --config jest.config.js"
     },
     "repository": {
         "type": "git",
@@ -31,6 +33,7 @@
     "devDependencies": {
         "@babel/core": "^7.7.4",
         "@babel/plugin-proposal-class-properties": "^7.8.3",
+        "@babel/plugin-transform-modules-commonjs": "^7.10.4",
         "@babel/preset-env": "^7.7.4",
         "babel-jest": "^26.3.0",
         "babel-loader": "^8.0.6",
@@ -41,6 +44,7 @@
         "html-webpack-plugin": "^3.2.0",
         "imagemin-webpack-plugin": "^2.4.2",
         "jest": "^26.4.2",
+        "jest-html-reporter": "^3.2.0",
         "json-loader": "^0.5.7",
         "mini-css-extract-plugin": "^0.8.0",
         "node-sass": "^4.14.1",

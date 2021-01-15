@@ -4,8 +4,8 @@ class Vector {
     }
 
     setupCoordinates(x, y) {
-        this.x = x;
-        this.y = y;
+        this.x = Number(x);
+        this.y = Number(y);
     }
 }
 
