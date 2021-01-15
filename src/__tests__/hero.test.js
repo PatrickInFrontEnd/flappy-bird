@@ -212,7 +212,6 @@ describe("#Entity class works properly", () => {
             test("should return right boolean value depending on hero position and pipe generator", () => {
                 const hero = new Flappy_Bird(mockedCtx, mockedAllowPlaying);
                 hero.updateRadiusCoordinates(hero.x, hero.y);
-                console.log(hero);
                 const input = [
                     {
                         upperPipe: {
