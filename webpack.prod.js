@@ -1,12 +1,10 @@
 const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const optimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const imageMinPlugin = require("imagemin-webpack-plugin").default;
 const HtmlPlugin = require("html-webpack-plugin");
 const miniCSSExtractPlugin = require("mini-css-extract-plugin");
 const JsOptimizer = require("terser-webpack-plugin");
 const commonConfig = require("./webpack.common.js");
-const merge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 
 module.exports = merge(commonConfig, {
     mode: "production",
@@ -32,21 +30,21 @@ module.exports = merge(commonConfig, {
                 use: [miniCSSExtractPlugin.loader, "css-loader"],
             },
             {
+                test: /\.json$/,
+                type: "json",
+            },
+            {
                 test: /\.(jpe?g|gif|png|svg)$/i,
-                loader: "file-loader",
-                options: {
-                    outputPath: "images",
-                    name: "[name].[hash].[ext]",
-                    esModule: false,
+                type: "asset/resource",
+                generator: {
+                    filename: "images/[hash].[ext]",
                 },
             },
             {
                 test: /\.(mp3|mp4|flac)$/,
-                loader: "file-loader",
-                options: {
-                    outputPath: "gameSounds",
-                    name: "[name].[hash].[ext]",
-                    esModule: false,
+                type: "asset/resource",
+                generator: {
+                    filename: "gameSounds/[hash].[ext]",
                 },
             },
         ],
@@ -62,7 +60,6 @@ module.exports = merge(commonConfig, {
                     removeComments: true,
                 },
             }),
-            new optimizeCSSAssetsPlugin(),
         ],
     },
     plugins: [
@@ -70,8 +67,5 @@ module.exports = merge(commonConfig, {
             filename: "[name].[contentHash].css",
         }),
         new CleanWebpackPlugin(),
-        new imageMinPlugin({
-            test: /\.(jpe?g|gif|png|svg)$/i,
-        }),
     ],
 });
