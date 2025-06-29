@@ -1,14 +1,14 @@
-import Pipe_Generator from "./pipes_generator.js";
-import Flappy_Bird from "./hero.js";
-import SpriteSheet_Generator from "./SpriteSheet.js";
-import { createBuffer } from "./spritesFunctions.js";
-import { SoundMaker } from "./soundMaker.js";
-import Game_Menu from "./Interface.js";
-import { alphaAnimation } from "./animations.js";
-import KeyService from "./KeyService.js";
-import Score_Resolver from "./scoreResolver.js";
 import cursorPNG from "./../../img/cursor.png";
 import { handleErrorAnimation } from "./../Main/utils/animations";
+import { alphaAnimation } from "./animations.js";
+import Flappy_Bird from "./hero.js";
+import Game_Menu from "./Interface.js";
+import KeyService from "./KeyService.js";
+import Pipe_Generator from "./pipes_generator.js";
+import Score_Resolver from "./scoreResolver.js";
+import { SoundMaker } from "./soundMaker.js";
+import { createBuffer } from "./spritesFunctions.js";
+import SpriteSheet_Generator from "./SpriteSheet.js";
 
 class Game_Engine {
     constructor(
@@ -40,6 +40,8 @@ class Game_Engine {
         this.handleResize();
 
         this.allowedToClickAtMenu = true;
+        this.isInMenu = true;
+        this.isWaitingToStart = false;
 
         this.menuInterface = new Game_Menu(
             this.ctx,
@@ -55,6 +57,7 @@ class Game_Engine {
         );
 
         this.setCallbacksAtTilesOfMenu();
+        this.setupMenuKeyListeners();
     }
 
     generateGameEngineParams = () => {
@@ -91,7 +94,6 @@ class Game_Engine {
         this.skinOfBird = "bird-" + this.skin;
         this.birdSkins = ["bird-red", "bird-blue", "bird-yellow", "bird-gray"];
 
-        //It's a determinant of when we should create and add new pipe to the game, also helps with animation
         this.countFrame = 0;
         this.__DISTANCE = 100;
 
@@ -141,7 +143,6 @@ class Game_Engine {
     };
 
     draw = ({
-        //NOTE: Ready sprites && sounds
         lightBgLayer,
         bgLayer,
         upperPipeColumn,
@@ -159,7 +160,6 @@ class Game_Engine {
 
         this.ctx.clearRect(0, 0, this.cw, this.ch);
 
-        //NOTE: pushing pipes in appropriate distances and deleting them when behind the canvas
         this.handlePipes();
         const sprite = this.typeOfBg === "light" ? lightBgLayer : bgLayer;
 
@@ -237,13 +237,43 @@ class Game_Engine {
             this.scoreResolver.drawScore(this.ctx);
         });
         this.keyService.removeClickListener(this.canvas);
+
+        // Remove all key listeners during pause to prevent space key actions
+        this.keyService.removeKeyListener(this.canvas);
+
         this.isGamePaused = true;
     };
 
     resumeGame = () => {
         this.soundMaker.playSound(this.soundMaker.getSound("play"));
         this.isGamePaused = false;
-        this.keyService.addClickListener(this.canvas, this.bird.jump);
+
+        // Re-add key listeners when resuming
+        this.keyService.addKeyListener(this.canvas);
+
+        // Re-add Escape key mapping for pause/resume
+        this.keyService.addKeyMapping("Escape", (keystate) => {
+            if (this.isGamePaused === true && keystate) {
+                this.resumeGame();
+            } else if (this.isGamePaused === false && keystate) {
+                this.pauseGame();
+            }
+        });
+
+        // Use unified space key handler
+        this.keyService.addKeyMapping("Space", this.handleSpaceKey);
+
+        // Use the same mouse handler as listenToJump to avoid conflicts
+        const mouseJumpHandler = (clickState) => {
+            if (clickState === 1) {
+                this.bird.jump(1);
+                setTimeout(() => {
+                    this.bird.hasJumped = false;
+                }, 50);
+            }
+        };
+
+        this.keyService.addClickListener(this.canvas, mouseJumpHandler);
         requestAnimationFrame(() => {
             this.draw(this.gameProps);
         });
@@ -306,6 +336,7 @@ class Game_Engine {
     };
 
     play = () => {
+        this.isWaitingToStart = false;
         this.scoreResolver.resetScore();
         this.__SPEED_OF_PIPES = 3;
         this.startDrawing();
@@ -317,6 +348,10 @@ class Game_Engine {
                 this.pauseGame();
             }
         });
+
+        // Use unified space key handler
+        this.keyService.addKeyMapping("Space", this.handleSpaceKey);
+
         this.listenToJump();
         this.bird.jump(1);
         this.canvas.removeEventListener("mousedown", this.play);
@@ -353,6 +388,7 @@ class Game_Engine {
         this.__DISTANCE = 100;
         this.soundMaker.stopSound(bgSong);
         this.bird.y = this.ch / 2;
+        this.bird.hasJumped = false;
         this.pipesArray = [];
         this.countFrame = 1;
     };
@@ -386,7 +422,16 @@ class Game_Engine {
     };
 
     listenToJump = () => {
-        this.keyService.addClickListener(this.ctx.canvas, this.bird.jump);
+        const mouseJumpHandler = (clickState) => {
+            if (clickState === 1) {
+                this.bird.jump(1);
+                setTimeout(() => {
+                    this.bird.hasJumped = false;
+                }, 50);
+            }
+        };
+
+        this.keyService.addClickListener(this.ctx.canvas, mouseJumpHandler);
     };
 
     listener = (element = this.canvas) => {
@@ -429,6 +474,8 @@ class Game_Engine {
     };
 
     startGame = (ctx) => {
+        this.isInMenu = false;
+
         alphaAnimation(
             "in",
             ctx,
@@ -464,6 +511,7 @@ class Game_Engine {
                                 this.soundMaker.playSound(
                                     this.gameProps.sounds.bgSong
                                 );
+                                this.isWaitingToStart = true;
                                 this.canvas.addEventListener(
                                     "mousedown",
                                     this.play
@@ -476,12 +524,10 @@ class Game_Engine {
         );
     };
 
-    //TODO:
     setCallbacksAtTilesOfMenu = () => {
         const clickSound = this.soundMaker.getSound("menuClick");
 
         this.menuInterface.addCallbackOnTile("menuIcon", () => {
-            //TODO: Create callback for this tile
             this.soundMaker.playSound(clickSound);
 
             alphaAnimation(
@@ -653,7 +699,11 @@ class Game_Engine {
                         this.menuInterface.showMenu(ctx);
                     },
                     () => {
+                        this.isInMenu = true;
                         this.allowedToClickAtMenu = true;
+
+                        // Restore space key functionality when returning to menu
+                        this.setupMenuKeyListeners();
                     }
                 );
             }
@@ -696,6 +746,35 @@ class Game_Engine {
                 viewRefreshed = true;
             }
         });
+    };
+
+    // Unified space key handler for all game states
+    handleSpaceKey = (keystate) => {
+        if (keystate === 1) {
+            // Only on key press down
+            if (this.isInMenu && this.allowedToClickAtMenu) {
+                // Trigger play button when in main menu
+                const playButton = this.menuInterface.getTile("playButton");
+                if (playButton && !playButton.isHidden && playButton.callback) {
+                    playButton.callback();
+                }
+            } else if (this.isWaitingToStart) {
+                // Start the game when waiting for tap to start
+                this.play();
+            } else if (this.allowPlaying) {
+                // Jump when in game
+                this.bird.jump(keystate);
+            }
+        } else if (keystate === 0 && this.allowPlaying) {
+            // Handle key release for jumping
+            this.bird.jump(keystate);
+        }
+    };
+
+    setupMenuKeyListeners = () => {
+        this.keyService.addKeyListener(this.canvas);
+        // Use unified space key handler
+        this.keyService.addKeyMapping("Space", this.handleSpaceKey);
     };
 }
 

@@ -1,6 +1,5 @@
-import Vector from "./vector.js";
-import KeyService from "./KeyService.js";
 import { createAnimation } from "./animations.js";
+import Vector from "./vector.js";
 
 export default class Flappy_Bird extends Vector {
     constructor(ctx, allowPlay) {
@@ -14,6 +13,7 @@ export default class Flappy_Bird extends Vector {
         this.upForce = -8;
 
         this.allowPlaying = allowPlay;
+        this.hasJumped = false;
 
         this.jumpSound = undefined;
     }
@@ -66,19 +66,26 @@ export default class Flappy_Bird extends Vector {
     };
 
     jump = (keyState) => {
-        if (keyState && this.allowPlaying === true) {
+        if (keyState === 1 && this.allowPlaying === true && !this.hasJumped) {
+            this.hasJumped = true;
             this.velocity = 0;
             this.velocity += this.upForce;
             this.playSound(this.jumpSound);
         }
-    };
 
-    stopPlaying = () => {
-        this.allowPlaying = false;
+        if (keyState === 0) {
+            this.hasJumped = false;
+        }
     };
 
     startPlaying = () => {
         this.allowPlaying = true;
+        this.hasJumped = false;
+    };
+
+    stopPlaying = () => {
+        this.allowPlaying = false;
+        this.hasJumped = false;
     };
 
     collided = ({ upperPipe, bottomPipe }) => {
