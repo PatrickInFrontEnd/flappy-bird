@@ -62,7 +62,7 @@ describe("#Entity class works properly", () => {
             test("should update properties with right values", () => {
                 const hero = new Flappy_Bird(mockedCtx, mockedAllowPlaying);
 
-                hero.update("sprite", 100, "sound");
+                hero.update("sound");
 
                 expect(hero).toMatchObject({
                     jumpSound: "sound",

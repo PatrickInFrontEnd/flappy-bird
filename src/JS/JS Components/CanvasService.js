@@ -97,6 +97,12 @@ class Game_Engine {
         this.countFrame = 0;
         this.__DISTANCE = 100;
 
+        this.__FIXED_TIMESTEP = 1000 / 60;
+        this.__MAX_FRAME_TIME = 250;
+        this.lastTime = undefined;
+        this.accumulator = 0;
+        this.rafHandle = undefined;
+
         this.spritesGenerator = new SpriteSheet_Generator(this.spritesData);
 
         this.soundMaker = new SoundMaker();
@@ -142,33 +148,50 @@ class Game_Engine {
         }
     };
 
-    draw = ({
-        lightBgLayer,
-        bgLayer,
-        upperPipeColumn,
-        upperPipeSlot,
-        bottomPipeColumn,
-        bottomPipeSlot,
-        entity,
-        sounds: { jumpSound, collidedSound, bgSong },
-    }) => {
-        const [pauseIcon, playIcon] = ["pauseIcon", "playIcon"].map((name) =>
-            this.menuInterface.getTile(name)
-        );
+    loop = (timestamp) => {
+        if (this.lastTime === undefined) this.lastTime = timestamp;
+        let frameTime = timestamp - this.lastTime;
+        if (frameTime > this.__MAX_FRAME_TIME)
+            frameTime = this.__MAX_FRAME_TIME;
+        this.lastTime = timestamp;
+
+        if (this.isGamePaused === false && this.allowPlaying === true) {
+            this.accumulator += frameTime;
+            while (this.accumulator >= this.__FIXED_TIMESTEP) {
+                this.update();
+                this.accumulator -= this.__FIXED_TIMESTEP;
+                if (this.allowPlaying === false) break;
+            }
+        }
+
+        this.render(this.gameProps);
+
+        if (this.__pendingGameOverBgSong !== undefined) {
+            this.lastFrame = createBuffer(this.canvas, {
+                sx: 0,
+                sy: 0,
+                width: this.cw,
+                height: this.ch,
+            });
+            this.__pendingGameOverBgSong = undefined;
+        }
+
+        if (this.allowPlaying === true && this.isGamePaused === false) {
+            this.rafHandle = requestAnimationFrame(this.loop);
+        }
+    };
+
+    update = () => {
+        const { sounds: { jumpSound, collidedSound, bgSong } } = this.gameProps;
+
         this.countFrame++;
         if (this.countFrame > 3600) this.countFrame = 1;
 
-        this.ctx.clearRect(0, 0, this.cw, this.ch);
-
         this.handlePipes();
-        const sprite = this.typeOfBg === "light" ? lightBgLayer : bgLayer;
+        this.bird.update(jumpSound);
 
-        this.createBgLayer(sprite);
-        this.bird.update(entity, this.countFrame, jumpSound);
-
-        this.drawPipes({
-            upperPipeSprite: { upperPipeColumn, upperPipeSlot },
-            bottomPipeSprite: { bottomPipeColumn, bottomPipeSlot },
+        this.pipesArray.forEach((pipeGenerator) => {
+            pipeGenerator.update(this.__SPEED_OF_PIPES);
         });
 
         if (this.birdCollided(this.pipesArray) || this.bird.checkPosition()) {
@@ -201,6 +224,32 @@ class Game_Engine {
                 this.increaseSpeedOfPipes();
             }
         }
+    };
+
+    render = ({
+        lightBgLayer,
+        bgLayer,
+        upperPipeColumn,
+        upperPipeSlot,
+        bottomPipeColumn,
+        bottomPipeSlot,
+        entity,
+    }) => {
+        const [pauseIcon, playIcon] = ["pauseIcon", "playIcon"].map((name) =>
+            this.menuInterface.getTile(name)
+        );
+
+        this.ctx.clearRect(0, 0, this.cw, this.ch);
+
+        const sprite = this.typeOfBg === "light" ? lightBgLayer : bgLayer;
+        this.createBgLayer(sprite);
+
+        this.bird.draw(entity, this.countFrame);
+
+        this.renderPipes({
+            upperPipeSprite: { upperPipeColumn, upperPipeSlot },
+            bottomPipeSprite: { bottomPipeColumn, bottomPipeSlot },
+        });
 
         if (this.allowPlaying === true) {
             this.allowedToClickAtMenu = true;
@@ -210,18 +259,6 @@ class Game_Engine {
             } else {
                 playIcon.hideTile(this.ctx);
                 pauseIcon.showTile(this.ctx);
-                requestAnimationFrame(() => {
-                    this.draw({
-                        lightBgLayer,
-                        bgLayer,
-                        upperPipeColumn,
-                        upperPipeSlot,
-                        bottomPipeColumn,
-                        bottomPipeSlot,
-                        entity,
-                        sounds: { jumpSound, collidedSound, bgSong },
-                    });
-                });
             }
         } else {
             pauseIcon.isHidden = true;
@@ -232,6 +269,7 @@ class Game_Engine {
 
     pauseGame = () => {
         this.soundMaker.playSound(this.soundMaker.getSound("pause"));
+        this.isGamePaused = true;
         requestAnimationFrame(() => {
             this.menuInterface.showTile("scoreBoard");
             this.scoreResolver.drawScore(this.ctx);
@@ -240,8 +278,6 @@ class Game_Engine {
 
         // Remove all key listeners during pause to prevent space key actions
         this.keyService.removeKeyListener(this.canvas);
-
-        this.isGamePaused = true;
     };
 
     resumeGame = () => {
@@ -274,14 +310,16 @@ class Game_Engine {
         };
 
         this.keyService.addClickListener(this.canvas, mouseJumpHandler);
-        requestAnimationFrame(() => {
-            this.draw(this.gameProps);
-        });
+        this.lastTime = undefined;
+        this.accumulator = 0;
+        this.rafHandle = requestAnimationFrame(this.loop);
     };
 
     startDrawing = () => {
         this.allowPainting();
-        this.draw(this.gameProps);
+        this.lastTime = undefined;
+        this.accumulator = 0;
+        this.rafHandle = requestAnimationFrame(this.loop);
     };
 
     handlePipes = () => {
@@ -326,12 +364,9 @@ class Game_Engine {
         }
     };
 
-    drawPipes = ({ upperPipeSprite, bottomPipeSprite }) => {
+    renderPipes = ({ upperPipeSprite, bottomPipeSprite }) => {
         this.pipesArray.forEach((pipeGenerator) => {
-            pipeGenerator.updatePipes(
-                { upperPipeSprite, bottomPipeSprite },
-                this.__SPEED_OF_PIPES
-            );
+            pipeGenerator.drawPipes({ upperPipeSprite, bottomPipeSprite });
         });
     };
 
@@ -339,6 +374,7 @@ class Game_Engine {
         this.isWaitingToStart = false;
         this.scoreResolver.resetScore();
         this.__SPEED_OF_PIPES = 3;
+        this.bird.jumpSound = this.gameProps.sounds.jumpSound;
         this.startDrawing();
         this.keyService.addKeyListener(this.canvas);
         this.keyService.addKeyMapping("Escape", (keystate) => {
@@ -367,12 +403,7 @@ class Game_Engine {
     banPainting = (bgSong) => {
         this.allowPlaying = false;
         this.keyService.removeKeyListener(this.canvas);
-        this.lastFrame = createBuffer(this.canvas, {
-            sx: 0,
-            sy: 0,
-            width: this.cw,
-            height: this.ch,
-        });
+        this.__pendingGameOverBgSong = bgSong;
         setTimeout(() => {
             this.showSubMenu(this.lastFrame, this.ctx, bgSong);
         }, 1000);
@@ -391,6 +422,8 @@ class Game_Engine {
         this.bird.hasJumped = false;
         this.pipesArray = [];
         this.countFrame = 1;
+        this.lastTime = undefined;
+        this.accumulator = 0;
     };
 
     birdCollided = ([...pipesGenerators]) => {

@@ -27,13 +27,12 @@ export default class Flappy_Bird extends Vector {
         this.ctx.drawImage(image, this.x, this.y, this.width, this.height);
     };
 
-    update = (entitySprites, frameCounter, sound) => {
+    update = (sound) => {
         if (!this.jumpSound) this.jumpSound = sound;
         this.velocity += this.__GRAVITY;
         this.y += this.velocity;
         this.updateRadiusCoordinates(this.x, this.y);
         this.checkPosition();
-        this.draw(entitySprites, frameCounter);
     };
 
     playSound = (sound) => {

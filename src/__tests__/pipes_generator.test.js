@@ -27,7 +27,7 @@ describe("Pipes generator works properly", () => {
                 drawPipes: expect.any(Function),
                 animatePipes: expect.any(Function),
                 increaseSpeed: expect.any(Function),
-                updatePipes: expect.any(Function),
+                update: expect.any(Function),
             };
 
             expect(pipesGenerator).toMatchObject(matchedObj);
