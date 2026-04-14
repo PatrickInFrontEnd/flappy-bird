@@ -57,7 +57,7 @@
         "browser-sync": "^2.26.12",
         "browser-sync-webpack-plugin": "^2.2.2",
         "cors": "^2.8.5",
-        "express": "^4.17.1",
+        "express": "^4.21.1",
         "express-sslify": "^1.2.0",
         "gsap": "^3.1.1"
     }
