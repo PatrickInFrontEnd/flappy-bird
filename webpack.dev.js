@@ -2,10 +2,9 @@ const path = require("path");
 const HtmlPlugin = require("html-webpack-plugin");
 const miniCSSExtractPlugin = require("mini-css-extract-plugin");
 const commonConfig = require("./webpack.common.js");
-const BrowserSyncPlugin = require("browser-sync-webpack-plugin");
 const { merge } = require("webpack-merge");
 
-const port = 5050;
+const port = 3000;
 
 module.exports = merge(commonConfig, {
     mode: "development",
@@ -18,6 +17,7 @@ module.exports = merge(commonConfig, {
             directory: path.join(__dirname, "src"),
         },
         port,
+        hot: true,
     },
     module: {
         rules: [
@@ -63,11 +63,6 @@ module.exports = merge(commonConfig, {
         }),
         new miniCSSExtractPlugin({
             filename: "[name].[ext]",
-        }),
-        new BrowserSyncPlugin({
-            host: "localhost",
-            port: 3000,
-            proxy: `http://localhost:${port}`,
         }),
     ],
 });

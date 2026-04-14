@@ -1,5 +1,4 @@
 const path = require("path");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlPlugin = require("html-webpack-plugin");
 const miniCSSExtractPlugin = require("mini-css-extract-plugin");
 const JsOptimizer = require("terser-webpack-plugin");
@@ -11,6 +10,7 @@ module.exports = merge(commonConfig, {
     output: {
         filename: "[name].[contentHash].js",
         path: path.resolve(__dirname, "dist"),
+        clean: true,
     },
     module: {
         rules: [
@@ -66,6 +66,5 @@ module.exports = merge(commonConfig, {
         new miniCSSExtractPlugin({
             filename: "[name].[contentHash].css",
         }),
-        new CleanWebpackPlugin(),
     ],
 });
