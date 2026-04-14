@@ -97,9 +97,8 @@ export default class Pipe_Generator {
         this.__SPEED++;
     };
 
-    updatePipes = ({ upperPipeSprite, bottomPipeSprite }, speed) => {
+    update = (speed) => {
         if (speed && this.__SPEED !== speed) this.__SPEED = speed;
         this.animatePipes();
-        this.drawPipes({ upperPipeSprite, bottomPipeSprite });
     };
 }

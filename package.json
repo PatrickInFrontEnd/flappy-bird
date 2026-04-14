@@ -32,6 +32,7 @@
     "homepage": "https://github.com/PatrickInFrontEnd/flappy-bird#readme",
     "devDependencies": {
         "@babel/core": "^7.24.6",
+        "@babel/plugin-transform-class-properties": "^7.24.6",
         "@babel/plugin-transform-modules-commonjs": "^7.24.6",
         "@babel/preset-env": "^7.24.6",
         "babel-jest": "^29.7.0",

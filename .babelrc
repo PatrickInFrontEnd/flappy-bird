@@ -1,5 +1,6 @@
 {
     "presets": ["@babel/preset-env"],
+    "plugins": ["@babel/plugin-transform-class-properties"],
     "env": {
         "test": {
             "plugins": ["@babel/plugin-transform-modules-commonjs"]
